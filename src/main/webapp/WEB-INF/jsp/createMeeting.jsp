@@ -21,7 +21,7 @@
                                                     <input class="form-control" placeholder="Subject" name="subject" type="text" id="subject">
                                                 </div>
                                                 <div class="form-group">
-                                                    <input class="form-control" placeholder="Participants" name="participants" type="text">
+                                                    <input class="form-control" placeholder="Participants" name="participants" type="text" id="participants">
                                                 </div>
                                                 <div class="form-group">
                                                     <input class="form-control" placeholder="Owner" name="owner" type="text">
@@ -65,3 +65,28 @@
                         </div>
                         <!-- /.col-lg-12 -->
                     </div>
+                    
+                    <script>
+	$(document).ready(function() {
+		$('#participants').autocomplete({
+			serviceUrl: 'getTags',
+			paramName: "tagName",
+			delimiter: ",",
+		    transformResult: function(response) {
+		    	alert("hello"+response);
+		        return {
+		        	
+		            suggestions: $.map($.parseJSON(response), function(item) {
+		            	
+		                return { value: item.tagName, data: item.id };
+		            })
+		            
+		        };
+		        
+		    }
+		    
+		});
+		
+		
+	});
+	</script>

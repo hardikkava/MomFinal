@@ -1,7 +1,9 @@
 package com.pksh.controller;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -131,4 +133,20 @@ public class MOMController
 		
 		return headers;
 	}
+	
+/*	@RequestMapping("/searchParticipants")
+	public void searchParticipants() 
+	{
+		System.out.println("WELCOME searchParticipants CALL :::: ");
+	}*/
+	
+	@RequestMapping(value = "/getTags", method = RequestMethod.GET)
+	public void getTags(@RequestParam String tagName) 
+	{
+		System.out.println("WELCOME searchParticipants CALL :::: ");
+		//return simulateSearchResult(tagName);
+
+	}
+
+	
 }
