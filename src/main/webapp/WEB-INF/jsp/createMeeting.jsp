@@ -1,6 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
-				<div class="row">
+    			<div class="row">
 		            <div class="col-lg-12">
 		                <h1 class="page-header">Meeting</h1>
 		            </div>
@@ -67,26 +67,25 @@
                     </div>
                     
                     <script>
-	$(document).ready(function() {
-		$('#participants').autocomplete({
-			serviceUrl: 'getTags',
-			paramName: "tagName",
-			delimiter: ",",
-		    transformResult: function(response) {
-		    	alert("hello"+response);
-		        return {
-		        	
-		            suggestions: $.map($.parseJSON(response), function(item) {
-		            	
-		                return { value: item.tagName, data: item.id };
-		            })
-		            
-		        };
-		        
-		    }
-		    
-		});
-		
-		
-	});
-	</script>
+						$(document).ready(function() {
+							$('#participants').autocomplete({
+								serviceUrl: 'searchParticipants',
+								paramName: "paramName",
+								delimiter: ",",
+							    transformResult: function(response) {
+							        return {
+							        	
+							            suggestions: $.map($.parseJSON(response), function(item) {
+							            	
+							                return { value: item.tagName, data: item.id };
+							            })
+							            
+							        };
+							        
+							    }
+							    
+							});
+							
+							
+						});
+					</script>

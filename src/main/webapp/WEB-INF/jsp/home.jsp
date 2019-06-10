@@ -29,7 +29,8 @@
 
         <!-- Custom Fonts -->
         <link href="css/font-awesome.min.css" rel="stylesheet" type="text/css">
-        
+        <script src="js/jquery.min.js"></script>
+        <script src="js/jquery.autocomplete.min.js"></script>
         <script src="js/mom.js"></script>
 		
         
@@ -358,7 +359,7 @@
         <!-- /#wrapper -->
 		
         <!-- jQuery -->
-        <script src="js/jquery.min.js"></script>
+   <!--      <script src="js/jquery.min.js"></script> -->
 
         <!-- Bootstrap Core JavaScript -->
         <script src="js/bootstrap.min.js"></script>
@@ -373,8 +374,8 @@
         <!-- Custom Theme JavaScript -->
         <script src="js/startmin.js"></script>
         
-        <script src="<c:url value="/js/jquery.autocomplete.min.js" />"></script>
-		<script src="<c:url value="/js/jquery-ui.js" />"></script>
+        
+	<!--  	<script src="<c:url value="/js/jquery-ui.js" />"></script>-->
 		
     </body>
 </html>

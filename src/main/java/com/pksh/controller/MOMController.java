@@ -134,19 +134,10 @@ public class MOMController
 		return headers;
 	}
 	
-/*	@RequestMapping("/searchParticipants")
-	public void searchParticipants() 
+	@RequestMapping("/searchParticipants")
+	public void searchParticipants(@RequestParam String paramName) 
 	{
-		System.out.println("WELCOME searchParticipants CALL :::: ");
-	}*/
-	
-	@RequestMapping(value = "/getTags", method = RequestMethod.GET)
-	public void getTags(@RequestParam String tagName) 
-	{
-		System.out.println("WELCOME searchParticipants CALL :::: ");
-		//return simulateSearchResult(tagName);
-
+		System.out.println("WELCOME AUTOCOMPLETE CALL :::: "+paramName);
 	}
-
 	
 }
