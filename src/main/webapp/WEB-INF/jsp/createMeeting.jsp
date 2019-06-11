@@ -46,7 +46,7 @@
                                                 </div>
                                                 <div class="form-group">
                                                 	<label>Due date</label>
-                                                    <input class="form-control"  name="duedate" type="date">
+                                                    <input class="form-control"  name="duedate" type="datetime-local">
                                                 </div>
                                                 
                                                 <div align="center">
@@ -73,11 +73,12 @@
 								paramName: "paramName",
 								delimiter: ",",
 							    transformResult: function(response) {
+							    	
 							        return {
 							        	
 							            suggestions: $.map($.parseJSON(response), function(item) {
 							            	
-							                return { value: item.tagName, data: item.id };
+							                return { value: item.email, data: item.username };
 							            })
 							            
 							        };

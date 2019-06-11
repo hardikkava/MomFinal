@@ -17,8 +17,6 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.util.LinkedMultiValueMap;
-import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -27,15 +25,17 @@ import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.pksh.model.Search;
 import com.pksh.model.User;
 
 @Controller
 public class MOMController 
 {
-	
-	
 	@Value("${LoginURL}")
 	String LoginURL;
+	
+	@Value("${SearchParticipants}")
+	String SearchParticipants;
 	
 	@RequestMapping("/")
 	public String login() 
@@ -135,9 +135,38 @@ public class MOMController
 	}
 	
 	@RequestMapping("/searchParticipants")
-	public void searchParticipants(@RequestParam String paramName) 
+	public @ResponseBody List<Search> searchParticipants(@RequestParam String paramName) 
 	{
-		System.out.println("WELCOME AUTOCOMPLETE CALL :::: "+paramName);
+		List<String> userList = null;
+		List<Search> searchList = new ArrayList<Search>();
+		try
+		{
+			RestTemplate restTemplate = new RestTemplate();
+			HttpEntity entity = new HttpEntity(getAuthHeader());
+			
+			ResponseEntity<List> result = restTemplate.exchange(SearchParticipants + paramName, HttpMethod.GET, entity, List.class);
+			userList = result.getBody();
+			
+			for(String user : userList)
+			{
+				Search search = new Search();
+				search.setEmail(user);
+				search.setUsername(user);
+		
+				searchList.add(search);
+			}
+		}
+		catch(Exception e)
+		{
+			System.out.println("Exception during searching ::: "+e);
+		}
+		return searchList;
+	}
+	
+	@RequestMapping("/registerAccount")
+	public String signUp() 
+	{
+		return "signUp";
 	}
 	
 }

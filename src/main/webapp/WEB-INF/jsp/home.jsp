@@ -29,6 +29,7 @@
 
         <!-- Custom Fonts -->
         <link href="css/font-awesome.min.css" rel="stylesheet" type="text/css">
+        <link href="<c:url value="/css/main.css" />" rel="stylesheet">
         <script src="js/jquery.min.js"></script>
         <script src="js/jquery.autocomplete.min.js"></script>
         <script src="js/mom.js"></script>
@@ -374,8 +375,5 @@
         <!-- Custom Theme JavaScript -->
         <script src="js/startmin.js"></script>
         
-        
-	<!--  	<script src="<c:url value="/js/jquery-ui.js" />"></script>-->
-		
     </body>
 </html>
