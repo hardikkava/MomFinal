@@ -1,7 +1,10 @@
 package com.pksh.controller;
 
+import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -33,6 +36,9 @@ public class MOMController
 {
 	@Value("${LoginURL}")
 	String LoginURL;
+	
+	@Value("${RegisterURL}")
+	String RegisterURL;
 	
 	@Value("${SearchParticipants}")
 	String SearchParticipants;
@@ -167,6 +173,36 @@ public class MOMController
 	public String signUp() 
 	{
 		return "signUp";
+	}
+	
+	@RequestMapping("/registerForm")
+	public ModelAndView registerForm(User user, @RequestParam(value = "bdate") String bdate) 
+	{
+		ModelAndView mv = new ModelAndView();
+		try
+		{
+			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+			Date date = sdf.parse(bdate);
+			Timestamp ts=new Timestamp(date.getTime());
+			user.setBirthdate(ts);;
+			
+			RestTemplate restTemplate = new RestTemplate();
+			
+			HttpEntity<User> entity = new HttpEntity<>(user, getAuthHeader());
+			
+			ResponseEntity<Boolean> result = restTemplate.exchange(RegisterURL, HttpMethod.POST, entity, Boolean.class);
+			System.out.println("INSERT DATA ::: "+result.getStatusCodeValue());
+		}
+		catch(Exception e)
+		{
+			System.out.println("Exception during signup ::: " + e);
+		}
+		
+		mv.addObject("type","success");
+		mv.addObject("message", "You have been successfully Registered.");
+		mv.setViewName("login");
+		
+		return mv;
 	}
 	
 }

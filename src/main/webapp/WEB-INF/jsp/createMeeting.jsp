@@ -39,14 +39,35 @@
                                                     <input class="form-control" placeholder="Catagory" name="catagory" type="text">
                                                 </div>
                                                 <div class="form-group">
-                                                    <input class="form-control" placeholder="Recurring" name="recurring" type="text">
+                                                    <label>Recurring : </label>
+                                                    <label class="radio-inline">
+                                                        <input type="radio" name="recurring" value="yes" onclick="showRecurring();">Yes
+                                                    </label>
+                                                    <label class="radio-inline">
+                                                        <input type="radio" name="recurring" value="no" onclick="hideRecurring();" checked>No
+                                                    </label>
+                                                </div>
+                                                <div class="form-group" id="recurringPeriodID" style="display: none;">
+                                                	<label>Recurring Periods :</label>
+                                                    <select class="form-control" name="recurringPeriod">
+                                                    	<option>----------------------- select -----------------------</option>
+                                                        <option value="1">1 month</option>
+                                                        <option value="2">2 month</option>
+                                                        <option value="3">3 month</option>
+                                                        <option value="6">6 month</option>
+                                                        <option value="12">12 month</option>
+                                                    </select>
                                                 </div>
                                                 <div class="form-group">
                                                     <input class="form-control" placeholder="Referancemeeting" name="referancemeeting" type="text">
                                                 </div>
                                                 <div class="form-group">
-                                                	<label>Due date</label>
-                                                    <input class="form-control"  name="duedate" type="datetime-local">
+                                                	<label>Start date</label>
+                                                    <input class="form-control"  name="startdate" type="datetime-local">
+                                                </div>
+                                                <div class="form-group">
+                                                	<label>End date</label>
+                                                    <input class="form-control"  name="enddate" type="datetime-local">
                                                 </div>
                                                 
                                                 <div align="center">
@@ -86,6 +107,7 @@
 							    }
 							    
 							});
+							
 							
 							
 						});

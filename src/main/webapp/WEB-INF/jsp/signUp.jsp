@@ -36,13 +36,32 @@
                             <h3 class="panel-title">Sign Up</h3>
                         </div>
                         <div class="panel-body">
-                            <form action="loginForm" method="post">
+                            <form action="registerForm" method="post">
                                 <fieldset>
                                     <div class="form-group">
-                                        <input class="form-control" placeholder="E-mail" name="email" type="email" autofocus>
+                                        <input class="form-control" placeholder="Username" name="username" type="text" autofocus>
                                     </div>
                                     <div class="form-group">
                                         <input class="form-control" placeholder="Password" name="password" type="password" value="">
+                                    </div>
+                                    <div class="form-group">
+                                        <input class="form-control" placeholder="Email" name="email" type="email">
+                                    </div>
+                                    <div class="form-group">
+                                        <input class="form-control" placeholder="Firstname" name="firstname" type="text">
+                                    </div>
+                                    <div class="form-group">
+                                        <input class="form-control" placeholder="Lastname" name="lastname" type="text">
+                                    </div>
+                                    <div class="form-group">
+                                        <textarea class="form-control" placeholder="Address" rows="3" name="address"></textarea>
+                                    </div>
+                                    <div class="form-group">
+                                        <input class="form-control" placeholder="Company" name="company" type="text">
+                                    </div>
+                                    <div class="form-group">
+                                       	<label>Birthdate</label>
+                                        <input class="form-control"  name="bdate" type="date">
                                     </div>
                                     <input class="btn btn-lg btn-success btn-block" type="submit" name="submit" value="Register">
                                 </fieldset>

@@ -19,3 +19,13 @@ function onCreateMeeting()
 		}
 		});
 }
+
+function showRecurring()
+{
+	document.getElementById('recurringPeriodID').style.display = 'block';
+}
+
+function hideRecurring()
+{
+	document.getElementById('recurringPeriodID').style.display ='none';
+}
