@@ -1,5 +1,8 @@
 package com.pksh.controller;
 
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -26,8 +29,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.pksh.model.Meeting;
 import com.pksh.model.Search;
 import com.pksh.model.User;
 
@@ -42,6 +47,9 @@ public class MOMController
 	
 	@Value("${SearchParticipants}")
 	String SearchParticipants;
+	
+/*	@Value("${fileLocation}")
+	String fileLocation;*/
 	
 	@RequestMapping("/")
 	public String login() 
@@ -203,6 +211,36 @@ public class MOMController
 		mv.setViewName("login");
 		
 		return mv;
+	}
+	
+	@RequestMapping("/saveMeeting")
+	public void saveMeeting(Meeting meeting, @RequestParam("file") MultipartFile file, @RequestParam(value = "startdate") String startdate, @RequestParam(value = "enddate") String enddate) 
+	{
+		try
+		{
+			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+			Date sdate = sdf.parse(startdate);
+			Timestamp startTs=new Timestamp(sdate.getTime());
+			System.out.println("START DATE ::: "+startTs);
+			meeting.setStartdate(startTs);
+			
+			Date edate = sdf.parse(enddate);
+			Timestamp endTs=new Timestamp(edate.getTime());
+			System.out.println("END DATE ::: "+endTs);
+			meeting.setEnddate(endTs);
+			
+			/* FILE SAVE */
+		/*	byte[] bytes = file.getBytes(); 
+			Path path = Paths.get(fileLocation + file.getOriginalFilename().toString());
+			Files.write(path, bytes);*/
+			
+			
+		}
+		catch(Exception e)
+		{
+			System.out.println("Exception during saveMeeting ::: " + e);
+		}
+		//return "createMeeting";
 	}
 	
 }

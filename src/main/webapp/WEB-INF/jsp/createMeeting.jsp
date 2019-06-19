@@ -16,7 +16,7 @@
                                 <div class="panel-body">
                                     <div class="row">
                                         <div class="col-lg-6">
-                                            <form role="form">
+                                            <form role="form" method="post" action="saveMeeting">
                                                 <div class="form-group">
                                                     <input class="form-control" placeholder="Subject" name="subject" type="text" id="subject">
                                                 </div>
