@@ -68,6 +68,10 @@ public class MOMController
 	@Value("${SearchParticipants}")
 	String SearchParticipants;
 	
+	
+	@Value("${getAllMeeting}")
+	String getAllMeeting;
+	
 /*	@Value("${fileLocation}")
 	String fileLocation;*/
 	
@@ -143,9 +147,27 @@ public class MOMController
 	}
 	
 	@RequestMapping("/dashboard")
-	public String dashboard() 
+	public  ModelAndView dashboard(HttpServletRequest request) 
 	{
-		return "dashboard";
+		ModelAndView mv=new ModelAndView();
+		List<Meeting> meetingList=null;
+		try {
+			RestTemplate restTemplate =new RestTemplate();
+			HttpEntity entity=new HttpEntity(getAuthHeader());
+			ResponseEntity<List> result= restTemplate.exchange(getAllMeeting, HttpMethod.GET,entity,List.class);
+			meetingList=result.getBody();
+			if(meetingList.isEmpty() || meetingList==null) {
+				
+			}
+			
+			
+		}catch (Exception e) {
+			// TODO: handle exception
+		}
+		System.out.println("Meeting List is : "+meetingList);
+		mv.addObject("meetingList",meetingList);
+		mv.setViewName("dashboard");
+		return mv;
 	}
 	
 	@RequestMapping("/createMeeting")

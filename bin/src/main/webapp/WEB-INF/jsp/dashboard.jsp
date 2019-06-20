@@ -1,4 +1,3 @@
-
 <div class="row">
                         <div class="col-lg-12">
                             <h1 class="page-header">Dashboard</h1>
@@ -99,53 +98,4 @@
                                 </a>
                             </div>
                         </div>
-                        <div>
-			<table id="example" class="table table-striped table-bordered nowrap" style="width:100%" >
-					<thead>
-						<tr>
-                <th>Subject</th>
-                <th>Participants</th>
-                <th>Place</th>
-                <th>StartDate</th>
-                <th>EndDate</th>
-                <th>Owner</th>
-            </tr>
-					</thead>
-					<tbody>
-						
-					<c:forEach items="${meetingList}" var="mlist">
-						<tr>
-							<td>${mlist.subject}</td>
-							<td>${mlist.participants}</td>
-							<td>${mlist.place}</td>
-							<td>${mlist.startdate}</td>
-							<td>${mlist.enddate}</td>
-							<td>${mlist.owner}</td>
-						
-						</tr>
-					</c:forEach>
-					</tbody>
-					<tfoot>
-						<tr>
-                <th>Subject</th>
-                <th>Participants</th>
-                <th>Place</th>
-                <th>StartDate</th>
-                <th>EndDate</th>
-                <th>Owner</th>
-            </tr>
-					</tfoot>
-				</table>
-			</div>
-			<script type="text/javascript">
-   	$(document).ready(function() {
-    $('#example').DataTable( 
-        /* ajax:           "DataAjax.txt",
-        deferRender:    true,
-        scrollY:        200,
-        scrollCollapse: true,
-        scroller:       true */
-    );
-} );
-   	</script>                 
                     </div>
