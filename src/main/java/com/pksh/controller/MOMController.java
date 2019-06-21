@@ -106,8 +106,12 @@ public class MOMController
 				session.setAttribute("firstname", user.getFirstname());
 				session.setAttribute("lastname", user.getLastname());
 			}
+			List<Meeting> meetingList=null;
+			ResponseEntity<List> meetings= getAllMeetings();
+			meetingList=meetings.getBody();
 			
 			mv.addObject("LoginName", session.getAttribute("firstname")+" "+session.getAttribute("lastname"));
+			mv.addObject("meetingList",meetingList);
 			viewName = "home";
 			
 			
@@ -152,9 +156,7 @@ public class MOMController
 		ModelAndView mv=new ModelAndView();
 		List<Meeting> meetingList=null;
 		try {
-			RestTemplate restTemplate =new RestTemplate();
-			HttpEntity entity=new HttpEntity(getAuthHeader());
-			ResponseEntity<List> result= restTemplate.exchange(getAllMeeting, HttpMethod.GET,entity,List.class);
+			ResponseEntity<List> result= getAllMeetings();
 			meetingList=result.getBody();
 			if(meetingList.isEmpty() || meetingList==null) {
 				
@@ -164,7 +166,7 @@ public class MOMController
 		}catch (Exception e) {
 			// TODO: handle exception
 		}
-		System.out.println("Meeting List is : "+meetingList);
+		//System.out.println("Meeting List is : "+meetingList);
 		mv.addObject("meetingList",meetingList);
 		mv.setViewName("dashboard");
 		return mv;
@@ -376,6 +378,21 @@ public class MOMController
 		  {
 			  System.out.println("Exception ::: " + e);
 		  }
+	}
+	
+	private ResponseEntity<List> getAllMeetings(){
+		ModelAndView mv=new ModelAndView();
+		List<Meeting> meetingList=null;
+		ResponseEntity<List> result=null;
+		try {
+			RestTemplate restTemplate =new RestTemplate();
+			HttpEntity entity=new HttpEntity(getAuthHeader());
+			result= restTemplate.exchange(getAllMeeting, HttpMethod.GET,entity,List.class);
+		}catch (Exception e) {
+			// TODO: handle exception
+		}
+		
+		return result;
 	}
 	
 	
