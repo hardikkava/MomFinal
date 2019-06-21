@@ -109,10 +109,11 @@ public class MOMController
 			List<Meeting> meetingList=null;
 			ResponseEntity<List> meetings= getAllMeetings();
 			meetingList=meetings.getBody();
+			mv.addObject("meetingList",meetingList);
+
 			
 			mv.addObject("LoginName", session.getAttribute("firstname")+" "+session.getAttribute("lastname"));
-			mv.addObject("meetingList",meetingList);
-			viewName = "home";
+						viewName = "home";
 			
 			
 			
