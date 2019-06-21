@@ -50,8 +50,7 @@
                                                 <div class="form-group" id="recurringPeriodID" style="display: none;">
                                                 	<label>Recurring Periods :</label>
                                                     <select class="form-control" name="recurringperiod">
-                                                    	<option>----------------------- select -----------------------</option>
-                                                        <option value="1">1 month</option>
+                                                    	<option value="1">1 month</option>
                                                         <option value="2">2 month</option>
                                                         <option value="3">3 month</option>
                                                         <option value="6">6 month</option>

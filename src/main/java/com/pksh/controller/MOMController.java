@@ -15,7 +15,17 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 
+import javax.mail.Message;
+import javax.mail.Multipart;
+import javax.mail.PasswordAuthentication;
+import javax.mail.Session;
+import javax.mail.Transport;
+import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeBodyPart;
+import javax.mail.internet.MimeMessage;
+import javax.mail.internet.MimeMultipart;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
@@ -68,9 +78,11 @@ public class MOMController
 	@Value("${SearchParticipants}")
 	String SearchParticipants;
 	
-	
 	@Value("${getAllMeeting}")
 	String getAllMeeting;
+	
+	@Value("${createMeeting}")
+	String createMeeting;
 	
 /*	@Value("${fileLocation}")
 	String fileLocation;*/
@@ -244,7 +256,7 @@ public class MOMController
 			HttpEntity<User> entity = new HttpEntity<>(user, getAuthHeader());
 			
 			ResponseEntity<Boolean> result = restTemplate.exchange(RegisterURL, HttpMethod.POST, entity, Boolean.class);
-			System.out.println("INSERT DATA ::: "+result.getStatusCodeValue());
+			
 		}
 		catch(Exception e)
 		{
@@ -277,7 +289,18 @@ public class MOMController
 			Path path = Paths.get(fileLocation + file.getOriginalFilename().toString());
 			Files.write(path, bytes);*/
 			
-			calenderInvite(req, meeting.getSubject(), fromdate, todate);
+			RestTemplate restTemplate = new RestTemplate();
+			
+			HttpEntity<Meeting> entity = new HttpEntity<>(meeting, getAuthHeader());
+			
+			ResponseEntity<Boolean> result = restTemplate.exchange(createMeeting, HttpMethod.POST, entity, Boolean.class);
+			
+			if(result.getStatusCodeValue() == 200)
+			{
+				//	calenderInvite(req, meeting.getSubject(), fromdate, todate);
+				//	sendMail(req, meeting.getParticipants(), meeting.getSubject());
+			}
+		
 		}
 		catch(Exception e)
 		{
@@ -394,6 +417,55 @@ public class MOMController
 		}
 		
 		return result;
+  }
+	public static void sendMail(HttpServletRequest req, String toMailId, String subject)
+	{
+		try
+		{
+		   String[] path = req.getServletContext().getRealPath("/").split("webapp/");
+		   String realPath = path[0]+"resources/static/";
+		   String calFile = "mycalendar.ics";
+		   String[] toMail = toMailId.split(",");
+		   
+		   Properties props = new Properties();
+		   props.put("mail.smtp.auth", "true");
+		   props.put("mail.smtp.starttls.enable", "true");
+		   props.put("mail.smtp.host", "smtp.gmail.com");
+		   props.put("mail.smtp.port", "587");
+		   
+		   Session session = Session.getDefaultInstance(props, new javax.mail.Authenticator() {
+		      protected PasswordAuthentication getPasswordAuthentication() {
+		         return new PasswordAuthentication("hardik.kava007@gmail.com", "9824404380");
+		      }
+		   });
+		   
+		   Message msg = new MimeMessage(session);
+		   msg.setFrom(new InternetAddress("hardik.kava007@gmail.com", false));
+		   
+		   for (int i = 0; i < toMail.length; i++)
+	       {
+			   msg.addRecipient(Message.RecipientType.TO, new InternetAddress(toMail[i]));
+	       }
+		   msg.setSubject(subject);
+		   msg.setContent("", "text/html");
+		   msg.setSentDate(new Date());
+
+		   MimeBodyPart messageBodyPart = new MimeBodyPart();
+		   messageBodyPart.setContent("", "text/html");
+
+		   Multipart multipart = new MimeMultipart();
+		   multipart.addBodyPart(messageBodyPart);
+		   MimeBodyPart attachPart = new MimeBodyPart();
+
+		   attachPart.attachFile(realPath+calFile);
+		   multipart.addBodyPart(attachPart);
+		   msg.setContent(multipart);
+		   Transport.send(msg);
+		}
+		catch(Exception e)
+		{
+			System.out.println("Exception During Sendmail ::: "+e);
+		}
 	}
 	
 	
