@@ -157,7 +157,7 @@
                                     <li onclick="onCreateMeeting()">
                                         <a href="#">Create Meeting</a>
                                     </li>
-                                    <li onclick="">
+                                    <li onclick="onViewMeeting()">
                                         <a href="#">View Meeting</a>
                                     </li>
                                 </ul>

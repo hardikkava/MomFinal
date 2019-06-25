@@ -99,7 +99,7 @@
                                 </a>
                             </div>
                         </div>
-                        <div>
+                       <%--  <div>
 			<table id="example" class="table table-striped table-bordered nowrap" style="width:100%" >
 					<thead>
 						<tr>
@@ -125,18 +125,8 @@
 						</tr>
 					</c:forEach>
 					</tbody>
-					<tfoot>
-						<tr>
-                <th>Subject</th>
-                <th>Participants</th>
-                <th>Place</th>
-                <th>StartDate</th>
-                <th>EndDate</th>
-                <th>Owner</th>
-            </tr>
-					</tfoot>
 				</table>
-			</div>
+			</div> --%>
 			<script type="text/javascript">
    	$(document).ready(function() {
     $('#example').DataTable( 

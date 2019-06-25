@@ -20,6 +20,15 @@ function onCreateMeeting()
 		});
 }
 
+function onViewMeeting() {
+	$.ajax({
+		url:"viewMeeting",
+		success:function(result){
+			$("#dashboardID").html(result);
+		}
+	});
+}
+
 function showRecurring()
 {
 	document.getElementById('recurringPeriodID').style.display = 'block';

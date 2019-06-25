@@ -191,6 +191,27 @@ public class MOMController
 		return "createMeeting";
 	}
 	
+	@RequestMapping("/viewMeeting")
+	public ModelAndView viewMeeting(HttpServletRequest request) {
+		ModelAndView mv=new ModelAndView();
+		List<Meeting> meetingList=null;
+		try {
+			ResponseEntity<List> result= getAllMeetings();
+			meetingList=result.getBody();
+			if(meetingList.isEmpty() || meetingList==null) {
+				
+			}
+			
+			
+		}catch (Exception e) {
+			// TODO: handle exception
+		}
+		//System.out.println("Meeting List is : "+meetingList);
+		mv.addObject("meetingList",meetingList);
+		mv.setViewName("viewMeeting");
+		return mv;
+	}
+	
 	public static HttpHeaders getAuthHeader()
 	{
 		String plainCreds = "avengers:pksh@28012528"; 
