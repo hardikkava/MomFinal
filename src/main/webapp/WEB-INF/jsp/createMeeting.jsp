@@ -52,7 +52,7 @@
                                                     <select class="form-control" name="recurringapproch">
                                                     	<option value="1">1 month</option>
                                                         <option value="2">2 month</option>
-                                                        <option value="3" selected>3 month</option>
+                                                        <option value="3">3 month</option>
                                                         <option value="6">6 month</option>
                                                         <option value="12">12 month</option>
                                                     </select>

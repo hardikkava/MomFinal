@@ -17,8 +17,6 @@
                 <th>StartDate</th>
                 <th>EndDate</th>
                 <th>Owner</th>
-                <th>Edit</th>
-                <th>Teste</th>
                 <th>Action</th>
             </tr>
 					</thead>
@@ -32,8 +30,6 @@
 							<td>${mlist.startdate}</td>
 							<td>${mlist.enddate}</td>
 							<td>${mlist.owner}</td>
-							<td><a href="#">Edit</a></td>
-							<td><a href="#">Edit</a></td>
 							<td onclick="onDisplayEditMeeting(${mlist.meetingid})"><a href="#">Edit</a></td>
 						
 						</tr>
