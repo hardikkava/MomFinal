@@ -17,6 +17,7 @@
                 <th>StartDate</th>
                 <th>EndDate</th>
                 <th>Owner</th>
+                <th>Action</th>
             </tr>
 					</thead>
 					<tbody>
@@ -29,6 +30,7 @@
 							<td>${mlist.startdate}</td>
 							<td>${mlist.enddate}</td>
 							<td>${mlist.owner}</td>
+							<td onclick="onDisplayEditMeeting(${mlist.meetingid})"><a href="#">Edit</a></td>
 						
 						</tr>
 					</c:forEach>
@@ -36,7 +38,11 @@
 				</table>
 			</div>
 			
-			
+			<style type="text/css">       
+        		td {
+  						word-break: break-all;  
+				   }
+			</style>
 			<script type="text/javascript">
    	$(document).ready(function() {
     $('#example').DataTable( 
@@ -44,7 +50,7 @@
         deferRender:    true,
         scrollY:        200,
         scrollCollapse: true,
-        scroller:       true */
+        scroller:       true*/
     );
 } );
    	</script>               
