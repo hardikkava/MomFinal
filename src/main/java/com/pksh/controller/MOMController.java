@@ -167,7 +167,7 @@ public class MOMController
 	}
 	
 	@RequestMapping("/dashboard")
-	public  ModelAndView dashboard(HttpServletRequest request) 
+	public  ModelAndView dashboard(HttpSession session) 
 	{
 		ModelAndView mv=new ModelAndView();
 		List<Meeting> meetingList=null;
@@ -184,18 +184,22 @@ public class MOMController
 		}
 		//System.out.println("Meeting List is : "+meetingList);
 		mv.addObject("meetingList",meetingList);
-		mv.setViewName("dashboard");
+		mv.addObject("LoginName", session.getAttribute("firstname")+" "+session.getAttribute("lastname"));
+		mv.setViewName("home");
 		return mv;
 	}
 	
 	@RequestMapping("/createMeeting")
-	public String createMeeting() 
+	public ModelAndView createMeeting(HttpSession session) 
 	{
-		return "createMeeting";
+		ModelAndView mv = new ModelAndView();
+		mv.addObject("LoginName", session.getAttribute("firstname")+" "+session.getAttribute("lastname"));
+		mv.setViewName("createMeeting");
+		return mv;
 	}
 	
 	@RequestMapping("/viewMeeting")
-	public ModelAndView viewMeeting(HttpServletRequest request) {
+	public ModelAndView viewMeeting(HttpSession session) {
 		ModelAndView mv=new ModelAndView();
 		List<Meeting> meetingList=null;
 		try {
@@ -211,6 +215,7 @@ public class MOMController
 		}
 		//System.out.println("Meeting List is : "+meetingList);
 		mv.addObject("meetingList",meetingList);
+		mv.addObject("LoginName", session.getAttribute("firstname")+" "+session.getAttribute("lastname"));
 		mv.setViewName("viewMeeting");
 		return mv;
 	}
