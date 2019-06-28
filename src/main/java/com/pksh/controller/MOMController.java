@@ -87,6 +87,19 @@ public class MOMController
 	@Value("${displayEditMeeting}")
 	String displayEditMeeting;
 	
+	@Value("${getAllUserMeeting}")
+    String getAllUserMeeting;
+    
+    @Value("${getUserMeetingsCounts}")
+    String getUserMeetingsCounts;
+    
+    @Value("${getUserTaskCounts}")
+    String getUserTaskCounts;
+    
+    
+    @Value("${getUserCompletedTaskCounts}")
+    String getUserCompletedTaskCounts;
+	
 /*	@Value("${fileLocation}")
 	String fileLocation;*/
 	
@@ -121,16 +134,17 @@ public class MOMController
 				session.setAttribute("firstname", user.getFirstname());
 				session.setAttribute("lastname", user.getLastname());
 			}
-			List<Meeting> meetingList=null;
-			ResponseEntity<List> meetings= getAllMeetings();
-			meetingList=meetings.getBody();
-			mv.addObject("meetingList",meetingList);
 
-			
+			int userMeetingCount=getUserMeetingsCounts(email);
+            int userTaskCount=getUserMeetingsCounts(email);
+            int userCompletedTaskCount=getUserCompletedTaskCounts(email);
+            
+            mv.addObject("userMeetingCount","23");
+            mv.addObject("userTaskCount","3");
+            mv.addObject("userCompletedTaskCount","54");
 			mv.addObject("LoginName", session.getAttribute("firstname")+" "+session.getAttribute("lastname"));
-						viewName = "home";
 			
-			
+			viewName = "home";
 			
 		}
 		catch(HttpClientErrorException e)
@@ -434,19 +448,94 @@ public class MOMController
 	}
 	
 	private ResponseEntity<List> getAllMeetings(){
-		ModelAndView mv=new ModelAndView();
-		List<Meeting> meetingList=null;
-		ResponseEntity<List> result=null;
-		try {
-			RestTemplate restTemplate =new RestTemplate();
-			HttpEntity entity=new HttpEntity(getAuthHeader());
-			result= restTemplate.exchange(getAllMeeting, HttpMethod.GET,entity,List.class);
-		}catch (Exception e) {
-			// TODO: handle exception
-		}
-		
-		return result;
+        ResponseEntity<List> result=null;
+        try {
+            RestTemplate restTemplate =new RestTemplate();
+            HttpEntity entity=new HttpEntity(getAuthHeader());
+            result= restTemplate.exchange(getAllMeeting, HttpMethod.GET,entity,List.class);
+        }catch (Exception e) {
+            // TODO: handle exception
+        }
+        
+        return result;
   }
+    
+    private int getUserMeetingsCounts(String eid)
+    {
+        ResponseEntity<Integer> result=null;
+        int count=0;
+        try 
+        {
+            RestTemplate restTemplate =new RestTemplate();
+            HttpEntity entity=new HttpEntity(getAuthHeader());
+            result = restTemplate.exchange(getUserMeetingsCounts+eid, HttpMethod.GET,entity,Integer.class);
+            count = result.getBody();
+            
+        }
+        catch (Exception e) 
+        {
+            // TODO: handle exception
+        }
+        
+        return count;
+    }
+    
+    private int getUserTaskCounts(String eid)
+    {
+        ResponseEntity<Integer> result=null;
+        int count=0;
+        try 
+        {
+            RestTemplate restTemplate =new RestTemplate();
+            HttpEntity entity=new HttpEntity(getAuthHeader());
+            result = restTemplate.exchange(getAllUserMeeting+eid, HttpMethod.GET,entity,Integer.class);
+            count = result.getBody();
+        }
+        catch (Exception e) 
+        {
+            // TODO: handle exception
+        }
+        
+        return count;
+    }
+
+    private int getUserCompletedTaskCounts(String eid)
+    {
+        ResponseEntity<Integer> result=null;
+        int count=0;
+        try 
+        {
+            RestTemplate restTemplate =new RestTemplate();
+            HttpEntity entity=new HttpEntity(getAuthHeader());
+            result = restTemplate.exchange(getAllUserMeeting+eid, HttpMethod.GET,entity,Integer.class);
+            count = result.getBody();
+        }
+        catch (Exception e) 
+        {
+            // TODO: handle exception
+        }
+        
+        return count;
+    }
+    
+    private ResponseEntity<List> getAllUserMeetings(String eid)
+    {
+        //ModelAndView mv=new ModelAndView();
+        List<Meeting> meetingList=null;
+        ResponseEntity<List> result=null;
+        try 
+        {
+            RestTemplate restTemplate =new RestTemplate();
+            HttpEntity entity=new HttpEntity(getAuthHeader());
+            result= restTemplate.exchange(getAllUserMeeting+eid, HttpMethod.GET,entity,List.class);
+        }
+        catch (Exception e) 
+        {
+            // TODO: handle exception
+        }
+        
+        return result;
+    }
 	public static void sendMail(HttpServletRequest req, String toMailId, String subject)
 	{
 		try

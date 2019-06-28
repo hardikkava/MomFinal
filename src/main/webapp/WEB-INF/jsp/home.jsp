@@ -38,7 +38,7 @@
                                             <i class="fa fa-users fa-5x"></i>
                                         </div>
                                         <div class="col-xs-9 text-right">
-                                            <div class="huge">26</div>
+                                            <div class="huge"><c:out value="${userMeetingCount}"></c:out></div>
                                             <div>Meetings</div>
                                         </div>
                                     </div>
@@ -61,7 +61,7 @@
                                             <i class="fa fa-tasks fa-5x"></i>
                                         </div>
                                         <div class="col-xs-9 text-right">
-                                            <div class="huge">12</div>
+                                            <div class="huge"><c:out value="${userTaskCount}"></c:out></div>
                                             <div>Tasks</div>
                                         </div>
                                     </div>
@@ -84,7 +84,7 @@
                                             <i class="fa fa-check-square-o fa-5x"></i>
                                         </div>
                                         <div class="col-xs-9 text-right">
-                                            <div class="huge">124</div>
+                                            <div class="huge"><c:out value="${userCompletedTaskCount}"></c:out></div>
                                             <div>Completed Task</div>
                                         </div>
                                     </div>
