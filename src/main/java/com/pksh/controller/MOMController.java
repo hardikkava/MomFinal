@@ -84,6 +84,9 @@ public class MOMController
 	@Value("${createMeeting}")
 	String createMeeting;
 	
+	@Value("${displayEditMeeting}")
+	String displayEditMeeting;
+	
 /*	@Value("${fileLocation}")
 	String fileLocation;*/
 	
@@ -292,7 +295,7 @@ public class MOMController
 	}
 	
 	@RequestMapping("/saveMeeting")
-	public void saveMeeting(HttpServletRequest req, Meeting meeting, /*@RequestParam("uploadfile") MultipartFile uploadfile,*/ @RequestParam(value = "fromdate") String fromdate, @RequestParam(value = "todate") String todate) 
+	public String saveMeeting(HttpServletRequest req, Meeting meeting, /*@RequestParam("uploadfile") MultipartFile uploadfile,*/ @RequestParam(value = "fromdate") String fromdate, @RequestParam(value = "todate") String todate) 
 	{
 		try
 		{
@@ -327,7 +330,7 @@ public class MOMController
 		{
 			System.out.println("Exception during saveMeeting ::: " + e);
 		}
-		//return "createMeeting";
+		return "home";
 	}
 	
 	public static void calenderInvite(HttpServletRequest req, String subject, String fromDate, String toDate)
@@ -487,6 +490,31 @@ public class MOMController
 		{
 			System.out.println("Exception During Sendmail ::: "+e);
 		}
+	}
+	
+	@RequestMapping("/displayEditMeeting")
+	public ModelAndView displayEditMeeting(@RequestParam(value="meetingid") String meetingid) 
+	{
+		ModelAndView mv = new ModelAndView();
+		try
+		{
+			RestTemplate restTemplate = new RestTemplate();
+			HttpEntity entity = new HttpEntity(getAuthHeader());
+			
+			ResponseEntity<Meeting> result = restTemplate.exchange(displayEditMeeting + meetingid, HttpMethod.GET, entity, Meeting.class);
+			Meeting meeting = result.getBody();
+			
+			List<Meeting> editMeetingList = new ArrayList<Meeting>();
+			editMeetingList.add(meeting);
+			
+			mv.addObject("editMeetingList", editMeetingList);
+		}
+		catch(Exception e)
+		{
+			System.out.println("Exception during showEditMeeting ::: ");
+		}
+		mv.setViewName("editmeeting");
+		return mv;
 	}
 	
 	

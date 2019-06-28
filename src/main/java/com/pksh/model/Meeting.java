@@ -11,7 +11,7 @@ public class Meeting
     private String place;
     private String note;
     private String file;
-    private String catagory;
+    private String category;
     private int recurring;
     private int recurringapproch;
     private int recurringperiod;
@@ -67,11 +67,11 @@ public class Meeting
 	public void setFile(String file) {
 		this.file = file;
 	}
-	public String getCatagory() {
-		return catagory;
+	public String getCategory() {
+		return category;
 	}
-	public void setCatagory(String catagory) {
-		this.catagory = catagory;
+	public void setCategory(String category) {
+		this.category = category;
 	}
 	public int getRecurring() {
 		return recurring;

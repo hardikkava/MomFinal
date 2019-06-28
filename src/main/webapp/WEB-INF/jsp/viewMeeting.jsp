@@ -19,6 +19,7 @@
                 <th>Owner</th>
                 <th>Edit</th>
                 <th>Teste</th>
+                <th>Action</th>
             </tr>
 					</thead>
 					<tbody>
@@ -33,17 +34,20 @@
 							<td>${mlist.owner}</td>
 							<td><a href="#">Edit</a></td>
 							<td><a href="#">Edit</a></td>
+							<td onclick="onDisplayEditMeeting(${mlist.meetingid})"><a href="#">Edit</a></td>
+						
 						</tr>
 					</c:forEach>
 					</tbody>
 				</table>
 			</div>
 			
-			 <style type="text/css">       
-        td {
-  word-break: break-all;  
-}
-</style>
+			 
+			<style type="text/css">       
+        		td {
+  						word-break: break-all;  
+				   }
+			</style>
 			<script type="text/javascript">
    	$(document).ready(function() {
     $('#example').DataTable( 
