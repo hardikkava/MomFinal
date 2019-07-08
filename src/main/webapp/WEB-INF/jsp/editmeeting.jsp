@@ -17,7 +17,7 @@
                                 <div class="panel-body">
                                     <div class="row">
                                         <div class="col-lg-6">
-                                            <form role="form" method="post" action="saveMeeting">
+                                            <form role="form" method="post" action="updateMeeting">
                                                 <c:forEach items="${editMeetingList}" var="editList">
                                                 <div class="form-group">
                                                     <input class="form-control" placeholder="Subject" name="subject" type="text" id="subject" value="${editList.subject}">
