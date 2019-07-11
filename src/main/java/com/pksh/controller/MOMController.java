@@ -106,7 +106,7 @@ public class MOMController
 	@RequestMapping("/")
 	public String login() 
 	{
-		return "login";
+			return "login";
 	}
 	
 	@RequestMapping(value = "/loginForm", method=RequestMethod.POST)
@@ -139,9 +139,9 @@ public class MOMController
             int userTaskCount=getUserMeetingsCounts(email);
             int userCompletedTaskCount=getUserCompletedTaskCounts(email);
             
-            mv.addObject("userMeetingCount","23");
-            mv.addObject("userTaskCount","3");
-            mv.addObject("userCompletedTaskCount","54");
+            mv.addObject("userMeetingCount",userMeetingCount);
+            mv.addObject("userTaskCount",userTaskCount);
+            mv.addObject("userCompletedTaskCount",userCompletedTaskCount);
 			mv.addObject("LoginName", session.getAttribute("firstname")+" "+session.getAttribute("lastname"));
 			
 			viewName = "home";
@@ -181,57 +181,76 @@ public class MOMController
 	}
 	
 	@RequestMapping("/dashboard")
-	public  ModelAndView dashboard(HttpSession session) 
+	public ModelAndView dashboard(HttpSession session) 
 	{
 		ModelAndView mv=new ModelAndView();
-		List<Meeting> meetingList=null;
-		try {
-			ResponseEntity<List> result= getAllMeetings();
-			meetingList=result.getBody();
-			if(meetingList.isEmpty() || meetingList==null) {
-				
-			}
-			
-			
-		}catch (Exception e) {
-			// TODO: handle exception
+		if(session.getAttribute("firstname") == null) {
+			mv.setViewName("login");
+			return mv; 
 		}
-		//System.out.println("Meeting List is : "+meetingList);
-		mv.addObject("meetingList",meetingList);
-		mv.addObject("LoginName", session.getAttribute("firstname")+" "+session.getAttribute("lastname"));
-		mv.setViewName("home");
-		return mv;
+		else {
+			List<Meeting> meetingList=null;
+			try {
+				ResponseEntity<List> result= getAllMeetings();
+				meetingList=result.getBody();
+				if(meetingList.isEmpty() || meetingList==null) {
+					
+				}
+				
+				
+			}catch (Exception e) {
+				// TODO: handle exception
+			}
+			//System.out.println("Meeting List is : "+meetingList);
+			mv.addObject("meetingList",meetingList);
+			mv.addObject("LoginName", session.getAttribute("firstname")+" "+session.getAttribute("lastname"));
+			mv.setViewName("home");
+			return mv;
+		}
+		
+		
+	
 	}
 	
 	@RequestMapping("/createMeeting")
 	public ModelAndView createMeeting(HttpSession session) 
 	{
 		ModelAndView mv = new ModelAndView();
-		mv.addObject("LoginName", session.getAttribute("firstname")+" "+session.getAttribute("lastname"));
-		mv.setViewName("createMeeting");
-		return mv;
+		if(session.getAttribute("firstname") == null) {
+			mv.setViewName("login");
+			return mv; 
+		}else {
+			mv.addObject("LoginName", session.getAttribute("firstname")+" "+session.getAttribute("lastname"));
+			mv.setViewName("createMeeting");
+			return mv;
+		}
 	}
 	
 	@RequestMapping("/viewMeeting")
 	public ModelAndView viewMeeting(HttpSession session) {
 		ModelAndView mv=new ModelAndView();
-		List<Meeting> meetingList=null;
-		try {
-			ResponseEntity<List> result= getAllMeetings();
-			meetingList=result.getBody();
-			if(meetingList.isEmpty() || meetingList==null) {
+		if(session.getAttribute("firstname") == null) {
+			mv.setViewName("login");
+			return mv; 
+		}else {
+			List<Meeting> meetingList=null;
+			try {
+				ResponseEntity<List> result= getAllMeetings();
+				meetingList=result.getBody();
+				if(meetingList.isEmpty() || meetingList==null) {
+					
+				}
 				
+				
+			}catch (Exception e) {
+				// TODO: handle exception
 			}
-			
-			
-		}catch (Exception e) {
-			// TODO: handle exception
+			//System.out.println("Meeting List is : "+meetingList);
+			mv.addObject("meetingList",meetingList);
+			mv.addObject("LoginName", session.getAttribute("firstname")+" "+session.getAttribute("lastname"));
+			mv.setViewName("viewMeeting");
+			return mv;
 		}
-		//System.out.println("Meeting List is : "+meetingList);
-		mv.addObject("meetingList",meetingList);
-		mv.addObject("LoginName", session.getAttribute("firstname")+" "+session.getAttribute("lastname"));
-		mv.setViewName("viewMeeting");
-		return mv;
 	}
 	
 	public static HttpHeaders getAuthHeader()
@@ -318,6 +337,7 @@ public class MOMController
 	{
 		try
 		{
+			System.out.println(fromdate+""+todate);
 			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm");
 			Date sdate = sdf.parse(fromdate);
 			Timestamp startTs=new Timestamp(sdate.getTime());
