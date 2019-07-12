@@ -245,7 +245,7 @@ public class MOMController
 			}catch (Exception e) {
 				// TODO: handle exception
 			}
-			//System.out.println("Meeting List is : "+meetingList);
+			System.out.println("Meeting List is : "+meetingList);
 			mv.addObject("meetingList",meetingList);
 			mv.addObject("LoginName", session.getAttribute("firstname")+" "+session.getAttribute("lastname"));
 			mv.setViewName("viewMeeting");
@@ -337,9 +337,10 @@ public class MOMController
 	{
 		try
 		{
-			System.out.println(fromdate+""+todate);
-			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm");
+			System.out.println(fromdate+""+todate+"");
+			SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy hh:mm a");
 			Date sdate = sdf.parse(fromdate);
+			
 			Timestamp startTs=new Timestamp(sdate.getTime());
 			meeting.setStartdate(startTs);
 			
@@ -347,6 +348,10 @@ public class MOMController
 			Timestamp endTs=new Timestamp(edate.getTime());
 			meeting.setEnddate(endTs);
 			
+			System.out.println(startTs+""+endTs+"");
+			System.out.println(meeting.getStartdate()+""+meeting.getEnddate());
+			
+			System.out.println(meeting);
 			/* FILE SAVE */
 		/*	byte[] bytes = file.getBytes(); 
 			Path path = Paths.get(fileLocation + file.getOriginalFilename().toString());
