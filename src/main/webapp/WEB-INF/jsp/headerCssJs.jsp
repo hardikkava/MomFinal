@@ -19,6 +19,14 @@
 <!-- Custom Fonts -->
 <link href="css/font-awesome.min.css" rel="stylesheet" type="text/css">
 <link href="<c:url value="/css/main.css" />" rel="stylesheet">
+
+<link href="<c:url value="/css/bootstrap-datetimepicker.css" />" rel="stylesheet">
+
+
 <script src="js/jquery.min.js"></script>
+
+<script src="js/moment-with-locales.js"></script>
+<script src="js/bootstrap-datetimepicker.js"></script>
+
 <script src="js/jquery.autocomplete.min.js"></script>
 <script src="js/mom.js"></script>

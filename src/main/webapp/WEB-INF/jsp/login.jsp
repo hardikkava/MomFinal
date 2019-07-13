@@ -41,10 +41,10 @@
                                 	<c:if test="${type eq 'success'}"><p style="font-size: 16px;" class="alert alert-success"><c:out value="${message}"></c:out></p></c:if>
                                 	<c:if test="${type eq 'alert'}"><p style="font-size: 16px;" class="alert alert-danger"><c:out value="${message}"></c:out></p></c:if>
                                     <div class="form-group">
-                                        <input class="form-control" placeholder="E-mail" name="email" type="email" autofocus>
+                                        <input class="form-control" required placeholder="E-mail" name="email" type="email" autofocus>
                                     </div>
                                     <div class="form-group">
-                                        <input class="form-control" placeholder="Password" name="password" type="password" value="">
+                                        <input class="form-control" required placeholder="Password" name="password" type="password" value="">
                                     </div>
                                     <div align="right">
                                     	<span>Not registered? <a href="registerAccount">Create an account</a></span>

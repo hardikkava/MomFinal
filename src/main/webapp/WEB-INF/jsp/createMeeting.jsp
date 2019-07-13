@@ -12,6 +12,7 @@
 
         <title>MOM</title>
 		<%@include file="headerCssJs.jsp" %>
+		
 	</head>
     <body>
 
@@ -40,25 +41,32 @@
                                         <div class="col-lg-6">
                                             <form role="form" method="post" action="saveMeeting">
                                                 <div class="form-group">
-                                                    <input class="form-control" placeholder="Subject" name="subject" type="text" id="subject">
+                                                <label>Subject</label>
+                                                    <input class="form-control" placeholder="Enter Meeting Subject..." required name="subject" type="text" id="subject">
                                                 </div>
                                                 <div class="form-group">
-                                                    <input class="form-control" placeholder="Participants" name="participants" type="text" id="participants">
+                                                    <label>Participants</label>
+                                                    <input class="form-control" placeholder="Enter Participants..." required name="participants" type="text" id="participants">
                                                 </div>
                                                 <div class="form-group">
-                                                    <input class="form-control" placeholder="Owner" name="owner" type="text">
+                                                	<label>Owner</label>
+                                                    <input class="form-control" placeholder="Enter Meeting Owner name" required name="owner" type="text">
                                                 </div>
                                                 <div class="form-group">
-                                                    <input class="form-control" placeholder="Place" name="place" type="text">
+                                                	<label>Place</label>
+                                                    <input class="form-control" placeholder="Enter Place..." required name="place" type="text">
                                                 </div>
                                                 <div class="form-group">
-                                                    <textarea class="form-control" placeholder="Note" rows="3" name="note"></textarea>
+                                                <label>Notes</label>
+                                                    <textarea class="form-control" placeholder="Enter Note..." required rows="3" name="note"></textarea>
                                                 </div>
                                                 <div class="form-group">
+                                                <label>File(s)</label>
                                                     <input type="file" name="uploadfile">
                                                 </div>
                                                 <div class="form-group">
-                                                    <input class="form-control" placeholder="Catagory" name="category" type="text">
+                                                <label>Category</label>
+                                                    <input class="form-control" placeholder="Enter Catagory..." required name="category" type="text">
                                                 </div>
                                                 <div class="form-group">
                                                     <label>Recurring : </label>
@@ -80,19 +88,24 @@
                                                     </select>
                                                 </div>
                                                 <div class="form-group">
-                                                    <input class="form-control" placeholder="Referancemeeting" name="referancemeeting" type="text">
-                                                </div>
-                                                <div class="form-group">
-                                                	<label>Start date</label>
-                                                    <input class="form-control"  name="fromdate" type="datetime-local">
-                                                </div>
-                                                <div class="form-group">
-                                                	<label>End date</label>
-                                                    <input class="form-control"  name="todate" type="datetime-local">
+                                                <label>Reference Meeting </label>
+                                                    <input class="form-control" placeholder="Refer Meeting..." name="referancemeeting" type="text">
                                                 </div>
                                                 
-                                                <div align="center">
+                                                <div class="form-group" style="position:relative">
+                                                	<label>Start date</label>
+                                                    <input type="text" class="form-control" required name="fromdate" id='startdatepicker'>
+                                                </div>
+                                    
+										  		<div class="form-group" style="position:relative">
+                                                	<label>End date</label>
+                                                    <input type="text" class="form-control" required name="todate" id="enddatepicker">
+                                                </div>
+                                          
+									          
+                                                <div class="pull-right">
                                                 	<button type="submit" class="btn btn-primary">Submit</button>
+                                                	<button type="button" class="btn btn-default">Cancel</button>
                                                 </div>
                                             </form>
                                         </div>
@@ -108,8 +121,28 @@
                         <!-- /.col-lg-12 -->
                     </div>
                     
-                    <script>
-						$(document).ready(function() {
+                   
+                
+                   <script>
+                    $(document).ready(function() {
+							
+                    	$('#startdatepicker').datetimepicker({
+                    		daysOfWeekDisabled:[6],
+                    		minDate: moment()
+                    	});
+                    	
+                        $('#enddatepicker').datetimepicker({
+                            useCurrent: false,
+                            daysOfWeekDisabled:[6],
+                            minDate: moment()
+                        });
+                        $("#startdatepicker").on("dp.change", function (e) {
+                            $('#enddatepicker').data("DateTimePicker").minDate(e.date);
+                        });
+                        $("#enddatepicker").on("dp.change", function (e) {
+                            $('#startdatepicker').data("DateTimePicker").maxDate(e.date);
+                        });
+							
 							$('#participants').autocomplete({
 								serviceUrl: 'searchParticipants',
 								paramName: "paramName",
