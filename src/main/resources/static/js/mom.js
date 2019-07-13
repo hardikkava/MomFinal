@@ -1,21 +1,19 @@
-function onDashboardClick()
+function showRecurring()
 {
-	$.ajax({
-		url: "dashboard", 
-		success: function(result)
-		{
-			$("#dashboardID").html(result);
-		}
-		});
+	document.getElementById('recurringPeriodID').style.display = 'block';
 }
 
-function onCreateMeeting()
+function hideRecurring()
+{
+	document.getElementById('recurringPeriodID').style.display ='none';
+}
+
+function onDisplayEditMeeting(meetingid)
 {
 	$.ajax({
-		url: "createMeeting", 
-		success: function(result)
-		{
+		url:"displayEditMeeting?meetingid="+meetingid,
+		success:function(result){
 			$("#dashboardID").html(result);
 		}
-		});
+	});
 }

@@ -1,28 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
-<!DOCTYPE html>
-<html lang="en">
-    <head>
-        <meta charset="utf-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <meta name="description" content="">
-        <meta name="author" content="">
-
-        <title>MOM</title>
-		<%@include file="headerCssJs.jsp" %>
-	</head>
-    <body>
-
-        <div id="wrapper">
-
-            <%@include file="header.jsp" %>
-
-            <div id="page-wrapper">
-                <div class="container-fluid" id="dashboardID">
-                    <!-- /.row -->
-                    <div class="row">
+<div class="row">
 		            <div class="col-lg-12">
 		                <h1 class="page-header">Meeting</h1>
 		            </div>
@@ -33,32 +12,33 @@
                         <div class="col-lg-12">
                             <div class="panel panel-primary">
                                 <div class="panel-heading">
-                                    Create Meeting
+                                    Edit Meeting
                                 </div>
                                 <div class="panel-body">
                                     <div class="row">
                                         <div class="col-lg-6">
-                                            <form role="form" method="post" action="saveMeeting">
+                                            <form role="form" method="post" action="updateMeeting">
+                                                <c:forEach items="${editMeetingList}" var="editList">
                                                 <div class="form-group">
-                                                    <input class="form-control" placeholder="Subject" name="subject" type="text" id="subject">
+                                                    <input class="form-control" placeholder="Subject" name="subject" type="text" id="subject" value="${editList.subject}">
                                                 </div>
                                                 <div class="form-group">
-                                                    <input class="form-control" placeholder="Participants" name="participants" type="text" id="participants">
+                                                    <input class="form-control" placeholder="Participants" name="participants" type="text" id="participants" value="${editList.participants}">
                                                 </div>
                                                 <div class="form-group">
-                                                    <input class="form-control" placeholder="Owner" name="owner" type="text">
+                                                    <input class="form-control" placeholder="Owner" name="owner" type="text" value="${editList.owner}">
                                                 </div>
                                                 <div class="form-group">
-                                                    <input class="form-control" placeholder="Place" name="place" type="text">
+                                                    <input class="form-control" placeholder="Place" name="place" type="text" value="${editList.place}">
                                                 </div>
                                                 <div class="form-group">
-                                                    <textarea class="form-control" placeholder="Note" rows="3" name="note"></textarea>
+                                                    <textarea class="form-control" placeholder="Note" rows="3" name="note">${editList.note}</textarea>
                                                 </div>
                                                 <div class="form-group">
                                                     <input type="file" name="uploadfile">
                                                 </div>
                                                 <div class="form-group">
-                                                    <input class="form-control" placeholder="Catagory" name="category" type="text">
+                                                    <input class="form-control" placeholder="Catagory" name="category" type="text" value="${editList.category}">
                                                 </div>
                                                 <div class="form-group">
                                                     <label>Recurring : </label>
@@ -72,24 +52,25 @@
                                                 <div class="form-group" id="recurringPeriodID" style="display: none;">
                                                 	<label>Recurring Periods :</label>
                                                     <select class="form-control" name="recurringapproch">
-                                                    	<option value="1">1 month</option>
-                                                        <option value="2">2 month</option>
-                                                        <option value="3">3 month</option>
-                                                        <option value="6">6 month</option>
-                                                        <option value="12">12 month</option>
+                                                    	<option value="1" <c:if test="${editList.recurringapproch eq '1'}">selected</c:if>>1 month</option>
+                                                        <option value="2" <c:if test="${editList.recurringapproch eq '2'}">selected</c:if>>2 month</option>
+                                                        <option value="3" <c:if test="${editList.recurringapproch eq '3'}">selected</c:if>>3 month</option>
+                                                        <option value="6" <c:if test="${editList.recurringapproch eq '6'}">selected</c:if>>6 month</option>
+                                                        <option value="12" <c:if test="${editList.recurringapproch eq '12'}">selected</c:if>>12 month</option>
                                                     </select>
                                                 </div>
                                                 <div class="form-group">
-                                                    <input class="form-control" placeholder="Referancemeeting" name="referancemeeting" type="text">
+                                                    <input class="form-control" placeholder="Referancemeeting" name="referancemeeting" type="text" value="${editList.referancemeeting}">
                                                 </div>
                                                 <div class="form-group">
                                                 	<label>Start date</label>
-                                                    <input class="form-control"  name="fromdate" type="datetime-local">
+                                                    <input class="form-control"  name="fromdate" type="datetime-local" value="${editList.startdate}">
                                                 </div>
                                                 <div class="form-group">
                                                 	<label>End date</label>
-                                                    <input class="form-control"  name="todate" type="datetime-local">
+                                                    <input class="form-control"  name="todate" type="datetime-local" value="${editList.enddate}">
                                                 </div>
+                                                </c:forEach>
                                                 
                                                 <div align="center">
                                                 	<button type="submit" class="btn btn-primary">Submit</button>
@@ -133,15 +114,3 @@
 							
 						});
 					</script>
-                   
-                </div>
-                <!-- /.container-fluid -->
-            </div>
-            <!-- /#page-wrapper -->
-
-        </div>
-        
-        <%@include file="footerCssJs.jsp" %>
-		
-    </body>
-</html>
