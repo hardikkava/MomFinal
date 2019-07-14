@@ -1,6 +1,8 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
+
 <!DOCTYPE html>
 <html lang="en">
     <head>
@@ -32,27 +34,23 @@
 						<table id="example" class="table table-bordered" style="width:100%" cellspacing="0" >
 							<thead class="thead-dark">
 							<tr>
-				                <th>Subject</th>
-				                <th>Participants</th>
+				                <th style="width:100%;">Meeting Desc..</th>
 				                <th>Place</th>
 				                <th>StartDate</th>
 				                <th>EndDate</th>
 				                <th>Owner</th>
-				                <th>Action</th>
 				            </tr>
 							</thead>
 							<tbody>
 						
 								<c:forEach items="${meetingList}" var="mlist">
-									<tr>
-										<td>${mlist.subject}</td>
-										<td>${mlist.participants}</td>
+								  <c:set var="startdate" value="${fn:replace(mlist.startdate,'T',' ')}" />
+								<tr>
+										<td><b>${mlist.subject}</b><br/><i> ${mlist.note}</i></td>
 										<td>${mlist.place}</td>
-										<td>${mlist.startdate}</td>
-										<td>${mlist.enddate}</td>
+										<td>${fn:replace({fn:substring(mlist.startdate,0,16)},'T',' ')}</td>
+										<td>${startdate}</td>
 										<td>${mlist.owner}</td>
-										<td onclick="onDisplayEditMeeting(${mlist.meetingid})"><a href="#">Edit</a></td>
-									
 									</tr>
 								</c:forEach>
 							</tbody>
