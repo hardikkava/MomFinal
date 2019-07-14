@@ -34,7 +34,7 @@
 						<table id="example" class="table table-bordered" style="width:100%" cellspacing="0" >
 							<thead class="thead-dark">
 							<tr>
-				                <th style="width:100%;">Meeting Desc..</th>
+				                <th style="width:100%;max-width: 58%;">Meeting Desc..</th>
 				                <th>Place</th>
 				                <th>StartDate</th>
 				                <th>EndDate</th>
@@ -44,12 +44,13 @@
 							<tbody>
 						
 								<c:forEach items="${meetingList}" var="mlist">
-								  <c:set var="startdate" value="${fn:replace(mlist.startdate,'T',' ')}" />
+								  <c:set var="startdate" value="${fn:substring(mlist.startdate,0,16)}" />
+								  <c:set var="enddate" value="${fn:substring(mlist.enddate,0,16)}" />
 								<tr>
-										<td><b>${mlist.subject}</b><br/><i> ${mlist.note}</i></td>
+										<td><a href="getMeetingDetail?meetid=${mlist.meetingid}" ><b>${mlist.subject}</b><br/><i> ${mlist.note}</i></a></td>
 										<td>${mlist.place}</td>
-										<td>${fn:replace({fn:substring(mlist.startdate,0,16)},'T',' ')}</td>
-										<td>${startdate}</td>
+										<td>${fn:replace(startdate,'T',' ')}</td>
+										<td>${fn:replace(enddate,'T',' ')}</td>
 										<td>${mlist.owner}</td>
 									</tr>
 								</c:forEach>
