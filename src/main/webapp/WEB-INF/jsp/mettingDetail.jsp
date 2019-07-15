@@ -21,7 +21,7 @@
 	.edmet:hover{
 		 cursor:pointer;
 	}
-	.tasklist table tr:hover{
+	.tasklist table tbody tr:hover{
 		background-color: #eae6e6;
 	}
 	
@@ -212,7 +212,7 @@
                                  	    <div class="col-lg-8 col-sm-8 col-xs-12" style="padding-left: 36px;">
                                  	 	<label style="padding-top: 24px;">Tasks</label><br/>
                                  	 	
-                                 	 	<div class="tasklist">
+                                 	 	<div class="tasklist" style="border: dotted #CCC 1px;border-radius: 3px;margin-bottom: 12px;">
                                  	 		<table id="taskexample" class="table" style="width:100%" cellspacing="0" >
 												<thead class="thead-dark">
 												<tr>
@@ -309,6 +309,12 @@
 
                    <script>
                     $(document).ready(function() {
+                    	
+                    	$("#taskexample").DataTable({
+                    		"paging":   false,
+                            "info":     false
+                    	});
+                    	
                     	$("#recurringPeriodID").hide();
                     	
                     	$("input[name$='recurring']").click(function() {
