@@ -43,6 +43,9 @@
                                                 <div class="form-group">
                                                     <label>Participants</label>
                                                     <input class="form-control" placeholder="Enter Participants..." required name="participants" type="text" id="participants">
+                                                	<select name="users[]" id="" class="form-control select2-multi" multiple="multiple" required >
+                                                		<option value="89">NAMDEV KHANDADE</option>
+                                                    </select>
                                                 </div>
                                                 <div class="form-group">
                                                 	<label>Owner</label>
@@ -118,6 +121,12 @@
                    <script>
                     $(document).ready(function() {
 							
+                    	$('.select2-multi').select2();
+                    	
+                    	$(".select2-multi").chosen({
+                    		  no_results_text: "Oops, nothing found!"
+                    		});
+                    	 
                     	$('#startdatepicker').datetimepicker({
                     		daysOfWeekDisabled:[0],
                     		minDate: moment()

@@ -237,9 +237,10 @@ public class MOMController
 		}else {
 			List<Meeting> meetingList=null;
 			try {
-				ResponseEntity<List> result= getAllMeetings();
-				meetingList=result.getBody();
-				if(meetingList.isEmpty() || meetingList==null) {
+					ResponseEntity<List> result= getAllMeetings();
+					meetingList=result.getBody();
+					if(meetingList.isEmpty() || meetingList==null) {
+						
 					
 				}
 				
@@ -247,7 +248,7 @@ public class MOMController
 			}catch (Exception e) {
 				// TODO: handle exception
 			}
-			System.out.println("Meeting List is : "+meetingList);
+			//System.out.println("Meeting List is : "+meetingList);
 			mv.addObject("meetingList",meetingList);
 			mv.addObject("LoginName", session.getAttribute("firstname")+" "+session.getAttribute("lastname"));
 			mv.setViewName("viewMeeting");

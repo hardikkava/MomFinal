@@ -22,6 +22,8 @@
 
 <link href="<c:url value="/css/bootstrap-datetimepicker.css" />" rel="stylesheet">
 
+<link href="<c:url value="/css/select2.min.css" />" rel="stylesheet" >
+
 
 <script src="js/jquery.min.js"></script>
 
@@ -29,4 +31,7 @@
 <script src="js/bootstrap-datetimepicker.js"></script>
 
 <script src="js/jquery.autocomplete.min.js"></script>
+
+<script src="/js/select2.min.js" type="text/javascript"></script>
+
 <script src="js/mom.js"></script>

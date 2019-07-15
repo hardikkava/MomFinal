@@ -16,8 +16,16 @@
 		
 	<style>
 	table tr td{
-	 padding: 4px;
+		 padding: 4px;
 	}
+	.edmet:hover{
+		 cursor:pointer;
+	}
+	.tasklist table tr:hover{
+		background-color: #eae6e6;
+	}
+	
+	
 	</style>	
 	</head>
     <body>
@@ -46,7 +54,107 @@
                             </div>
                             <div class="col-lg-4 col-sm-4 col-xs-12">
                             	<div style="padding-top: 11px;">
-                            		<i class="fa fa-2x fa-edit" style="color:green;"></i> &nbsp;&nbsp;
+                            		<i class="fa fa-2x fa-edit edmet" style="color:green;" data-target="#editModal" data-toggle="modal" ></i> &nbsp;&nbsp;
+                            		
+                            		<div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">  
+									  <div class="modal-dialog">      
+										<div class="modal-content">         
+											<div class="modal-header">
+												<button type="button" class="close" data-dismiss="modal"> &times;</button>            
+												<h4 class="modal-title" id="myModalLabel"> Edit Meeting </h4>   
+                            				</div>
+                            				<div class="modal-body">
+                            					
+                            				   <div class="row" style="padding-left: 14px;padding-right: 16px; ">
+		                                        	<form role="form" method="post" action="saveMeeting">
+		                                        		<div class="row">
+			                                       			 <div class="col-lg-12">
+			                                       			 	 <div class="form-group">
+				                                                	<label>Subject</label>
+				                                                    <input class="form-control" placeholder="Enter Meeting Subject..." required name="subject" value="${meeting.subject}" type="text" id="subject">
+				                                                </div>
+			                                            	 </div>
+		                                            	 </div>
+		                                            	 <div class="row">
+			                                            	 <div class="col-lg-6">
+			                                       			 	 <div class="form-group">
+				                                                	<label>StartDate</label>
+				                                                	<input type="text" class="form-control" placeholder="Enter Meeting Startdate..." value="${meeting.startdate}" required name="startdate" id='startdatepicker'>
+				                                                </div>
+			                                            	 </div>
+			                                            	 <div class="col-lg-6">
+			                                       			 	 <div class="form-group">
+				                                                	<label>EndDate</label>
+				                                                    <input type="text" class="form-control" placeholder="Enter Meeting Enddate..." required name="enddate" id='enddatepicker'>
+				                                                </div>
+			                                            	 </div>
+		                                            	 </div>
+		                                            	 <div class="row">
+			                                            	 <div class="col-lg-6">
+			                                       			 	 <div class="form-group">
+				                                                	<label>Category</label>
+				                                                	<input type="text" class="form-control" placeholder="Enter Meeting Category..." value="${meeting.category}" required name="cat">
+				                                                </div>
+			                                            	 </div>
+			                                            </div>
+			                                            <div class="row">
+			                                            	 <div class="col-lg-6">
+			                                       			 	 <div class="form-group">
+				                                                	<label>is Recurring?</label><br/>
+				                                                    
+				                                                        <input type="radio" name="recurring" value="1" id="rec-yes"> Yes
+				                                                   		<input type="radio" name="recurring" value="0" id="rec-no" > No
+				                                                   
+				                                                </div>
+			                                            	 </div>
+			                                            	 <div class="col-lg-6">
+				                                            	 <div class="form-group" id="recurringPeriodID" style="">
+				                                                	<label>Recurring Periods :</label>
+				                                                    <select class="form-control" name="recurringapproch">
+				                                                    	<option value="1">1 month</option>
+				                                                        <option value="2">2 month</option>
+				                                                        <option value="3">3 month</option>
+				                                                        <option value="6">6 month</option>
+				                                                        <option value="12">12 month</option>
+				                                                    </select>
+				                                                </div>
+			                                                </div>
+		                                            	 </div>
+		                                            	 <div class="row">
+			                                            	 <div class="col-lg-12">
+			                                       			 	 <div class="form-group">
+				                                                	<label>Notes</label>
+				                                                	<textarea  class="form-control" name="notes">${meeting.note}</textarea>
+				                                                </div>
+			                                            	 </div>
+		                                            	 </div>
+		                                            	 <div class="row">
+			                                            	 <div class="col-lg-12">
+			                                       			 	 <div class="form-group">
+				                                                	<label>Reference Meeting</label>
+				                                                	<select class="form-control" name="ref-meet">
+				                                                    	<option value="1">TEST</option>
+				                                                        <option value="2">Test</option>
+				                                                    </select>
+				                                                </div>
+			                                            	 </div>
+		                                            	 </div>
+		                                            
+			                                    </div>
+			                                    <!-- /.row (nested) -->
+                                    
+                                    
+                            				</div>
+                            				<div class="modal-footer"> <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>       
+												<button type="submit" class="btn btn-primary" id="btnadd" name="btnadd"> Save </button>        
+												 </form>
+											</div> 
+											
+                            			</div>
+                            		  </div>
+                            		 </div>
+                            		
+                            		
                             		<i class="fa fa-2x fa-check-circle" style="color:green;"></i>
                             	</div>
                             </div>
@@ -103,8 +211,89 @@
                                  	  
                                  	    <div class="col-lg-8 col-sm-8 col-xs-12" style="padding-left: 36px;">
                                  	 	<label style="padding-top: 24px;">Tasks</label><br/>
+                                 	 	
+                                 	 	<div class="tasklist">
+                                 	 		<table id="taskexample" class="table" style="width:100%" cellspacing="0" >
+												<thead class="thead-dark">
+												<tr>
+									                <th style="width: 100%;">Task Desc..</th>
+									                <th>Owner</th>
+									                <th>Assignee</th>
+									                <th>DueDate</th>
+									                <th>Actions</th>
+									            </tr>
+												</thead>
+												<tbody>
+												<tr>
+													<td>Gettnigs<br/><i>tst test yse .tsetse</i></td>
+													<td>KP</td>
+													<td>Kp</td>
+													<td>12-21-2019 03:34</td>
+													<td><i class="fa fa-edit"></i> &nbsp;&nbsp; <i class="fa fa-trash"></i></td>
+												</tr>
+												</tbody>
+											</table>
+                                 	 	</div>
+                                 	 	
                                  	 	<div class="tasks">
-                                 	 	<button class="btn"> <span style="position:relative;top: -4px;left: -2px;">Add New </span> <i class="fa fa-2x fa-plus-circle" style="color: green;"></i></button>
+                                 	 	<button class="btn" data-target="#taskModal" data-toggle="modal"> <span style="position:relative;top: -4px;left: -2px;">Add New </span> <i class="fa fa-2x fa-plus-circle" style="color: green;"></i></button>
+                                 	 	
+                                 	 	<div class="modal fade" id="taskModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">  
+										  <div class="modal-dialog">      
+											<div class="modal-content">         
+												<div class="modal-header">
+													<button type="button" class="close" data-dismiss="modal"> &times;</button>            
+													<h4 class="modal-title" id="myModalLabel"> New Task </h4>
+	                            				</div>
+	                            				
+	                            				<form role="form" method="post" action="saveMeeting">
+	                            				<div class="modal-body">
+	                            		
+	                                        		<div class="row">
+		                                       			 <div class="col-lg-12">
+		                                       			 	 <div class="form-group">
+			                                                	<label>Task Subject</label>
+			                                                    <input type="text" class="form-control" placeholder="Enter Task Subject..." required name="tasksubject" >
+			                                                </div>
+		                                            	 </div>
+	                                               </div>
+	                                               <div class="row">
+		                                       			 <div class="col-lg-12">
+		                                       			 	 <div class="form-group">
+			                                                	<label>Task summary</label>
+			                                                   	<textarea  class="form-control" name="tasksumry" placeholder="Enter Task Summary..."></textarea>
+			                                                </div>
+		                                            	 </div>
+	                                               </div>
+	                                               <div class="row">
+		                                       			 <div class="col-lg-6">
+		                                       			 	 <div class="form-group">
+			                                                	<label>Assignee</label>
+			                                                    <select class="form-control" name="taskassignee">
+				                                                    	<option value="1">TEST@gmail.com</option>
+				                                                        <option value="2">kp@kp.com</option>
+				                                                </select>
+			                                                </div>
+		                                            	 </div>
+		                                            	 <div class="col-lg-6">
+		                                       			 	 <div class="form-group">
+			                                                	<label>DueDate</label>
+			                                                    <input type="text" class="form-control" placeholder="Enter Task Duedate..." required name="duedate" id='duedatepicker'>
+			                                                </div>
+		                                            	 </div>
+	                                               </div>
+	                            				
+	                            				
+	                            				</div>
+	                            				<div class="modal-footer"> <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>       
+													<button type="submit" class="btn btn-primary" id="btnadd" name="btnadd"> Add </button>   
+													</form>     
+												</div> 
+												
+	                            			</div>
+	                            		  </div>
+	                            		</div>
+                                 	 	
                                  	 	</div>
                                  	 </div>
                                  	  <div class="col-lg-4 col-sm-4 col-xs-12">
@@ -120,7 +309,16 @@
 
                    <script>
                     $(document).ready(function() {
-							
+                    	$("#recurringPeriodID").hide();
+                    	
+                    	$("input[name$='recurring']").click(function() {
+                            if($(this).val() == '1')
+                            	$("#recurringPeriodID").show();
+                            else
+                            	$("#recurringPeriodID").hide();
+                            	
+                      });
+                    	
                     	$('#startdatepicker').datetimepicker({
                     		daysOfWeekDisabled:[0],
                     		minDate: moment()
@@ -131,6 +329,12 @@
                             daysOfWeekDisabled:[0],
                             minDate: moment()
                         });
+                        
+                        $('#duedatepicker').datetimepicker({
+                    		daysOfWeekDisabled:[0],
+                    		minDate: moment()
+                    	});
+                        
                         $("#startdatepicker").on("dp.change", function (e) {
                             $('#enddatepicker').data("DateTimePicker").minDate(e.date);
                         });

@@ -82,5 +82,4 @@ public class User
 	public void setUpdateddate(Timestamp updateddate) {
 		this.updateddate = updateddate;
 	}
-	
 }
