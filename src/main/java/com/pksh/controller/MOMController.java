@@ -96,12 +96,14 @@ public class MOMController
     @Value("${getUserTaskCounts}")
     String getUserTaskCounts;
     
-    
     @Value("${getUserCompletedTaskCounts}")
     String getUserCompletedTaskCounts;
 	
 /*	@Value("${fileLocation}")
 	String fileLocation;*/
+    
+    @Value("${getAllUsers}")
+    String getAllUsers;
     
     String strParticipants = "";
 	
@@ -135,6 +137,7 @@ public class MOMController
 			{
 				session.setAttribute("firstname", user.getFirstname());
 				session.setAttribute("lastname", user.getLastname());
+				session.setAttribute("email", user.getEmail());
 			}
 
 			int userMeetingCount=getUserMeetingsCounts(email);
@@ -193,7 +196,10 @@ public class MOMController
 		else {
 			List<Meeting> meetingList=null;
 			try {
-				ResponseEntity<List> result= getAllMeetings();
+				
+				String email = session.getAttribute("email").toString();
+					
+				ResponseEntity<List> result= getAllMeetings(email);
 				meetingList=result.getBody();
 				if(meetingList.isEmpty() || meetingList==null) {
 					
@@ -222,6 +228,12 @@ public class MOMController
 			mv.setViewName("login");
 			return mv; 
 		}else {
+			
+			List<User> userList= new ArrayList<>();
+			ResponseEntity<List> result=getAllUsers();
+			userList=result.getBody();
+				
+			mv.addObject("participants",userList);
 			mv.addObject("LoginName", session.getAttribute("firstname")+" "+session.getAttribute("lastname"));
 			mv.setViewName("createMeeting");
 			return mv;
@@ -237,7 +249,8 @@ public class MOMController
 		}else {
 			List<Meeting> meetingList=null;
 			try {
-					ResponseEntity<List> result= getAllMeetings();
+					String email = session.getAttribute("email").toString();
+					ResponseEntity<List> result= getAllUserMeetings(email);
 					meetingList=result.getBody();
 					if(meetingList.isEmpty() || meetingList==null) {
 						
@@ -475,18 +488,33 @@ public class MOMController
 		  }
 	}
 	
-	private ResponseEntity<List> getAllMeetings(){
+	private ResponseEntity<List> getAllMeetings(String email){
         ResponseEntity<List> result=null;
         try {
             RestTemplate restTemplate =new RestTemplate();
             HttpEntity entity=new HttpEntity(getAuthHeader());
-            result= restTemplate.exchange(getAllMeeting, HttpMethod.GET,entity,List.class);
+            result= restTemplate.exchange(getAllMeeting+email, HttpMethod.GET,entity,List.class);
         }catch (Exception e) {
             // TODO: handle exception
         }
         
         return result;
   }
+	
+   private ResponseEntity<List> getAllUsers(){
+       ResponseEntity<List> result=null;
+       try {
+           RestTemplate restTemplate =new RestTemplate();
+           HttpEntity entity=new HttpEntity(getAuthHeader());
+           result= restTemplate.exchange(getAllUsers, HttpMethod.GET,entity,List.class);
+       }catch (Exception e) {
+           // TODO: handle exception
+       }
+       
+       return result;
+ }
+   
+    
     
     private int getUserMeetingsCounts(String eid)
     {

@@ -44,7 +44,10 @@
                                                     <label>Participants</label>
                                                     <input class="form-control" placeholder="Enter Participants..." required name="participants" type="text" id="participants">
                                                 	<select name="users[]" id="" class="form-control select2-multi" multiple="multiple" required >
-                                                		<option value="89">NAMDEV KHANDADE</option>
+                                                		
+                                                		<c:forEach items="${participants}" var="plist">
+                                                			<option value="${plist.email}"><i>${plist.firstname} ${plist.lastname} (${plist.email})</i></option>
+                                                		</c:forEach>
                                                     </select>
                                                 </div>
                                                 <div class="form-group">
