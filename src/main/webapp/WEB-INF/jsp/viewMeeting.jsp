@@ -20,7 +20,16 @@
         <div id="wrapper">
 
             <%@include file="header.jsp" %>
-
+			<c:choose> 
+				<c:when test="${meetstatus eq 'success'}">
+						<script type="text/javascript">
+							
+								swal("Success!", "New Meeting Created Successfuly!", "success");
+							
+						</script>
+			   </c:when>
+			</c:choose>
+			
             <div id="page-wrapper">
                 <div class="container-fluid" id="dashboardID">
                     <!-- /.row -->

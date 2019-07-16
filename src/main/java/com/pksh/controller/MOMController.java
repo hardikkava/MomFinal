@@ -229,7 +229,7 @@ public class MOMController
 			return mv; 
 		}else {
 			
-			List<User> userList= new ArrayList<>();
+			List<User> userList= null;
 			ResponseEntity<List> result=getAllUsers();
 			userList=result.getBody();
 				
@@ -324,10 +324,13 @@ public class MOMController
 		ModelAndView mv = new ModelAndView();
 		try
 		{
-			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+			SimpleDateFormat sdf = new SimpleDateFormat("dd/MMM/yyyy");
+			
 			Date date = sdf.parse(bdate);
 			Timestamp ts=new Timestamp(date.getTime());
-			user.setBirthdate(ts);;
+			user.setBirthdate(ts);
+			
+			user.setEmail(user.getEmail().trim().replaceAll(" +", ""));
 			
 			RestTemplate restTemplate = new RestTemplate();
 			
@@ -349,12 +352,14 @@ public class MOMController
 	}
 	
 	@RequestMapping("/saveMeeting")
-	public String saveMeeting(HttpServletRequest req, Meeting meeting, /*@RequestParam("uploadfile") MultipartFile uploadfile,*/ @RequestParam(value = "fromdate") String fromdate, @RequestParam(value = "todate") String todate) 
+	public ModelAndView saveMeeting(HttpSession session, HttpServletRequest req, Meeting meeting,  @RequestParam("participant[]") String[] participants,/*@RequestParam("uploadfile") MultipartFile uploadfile,*/ @RequestParam(value = "fromdate") String fromdate, @RequestParam(value = "todate") String todate) 
 	{
+		ModelAndView mv = new ModelAndView();
+		
 		try
 		{
-			System.out.println(fromdate+""+todate+"");
-			SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy hh:mm a");
+			//System.out.println(fromdate+""+todate+"");
+			SimpleDateFormat sdf = new SimpleDateFormat("dd/MMM/yyyy hh:mm a");
 			Date sdate = sdf.parse(fromdate);
 			
 			Timestamp startTs=new Timestamp(sdate.getTime());
@@ -365,7 +370,11 @@ public class MOMController
 			meeting.setEnddate(endTs);
 			
 			System.out.println(startTs+""+endTs+"");
-			System.out.println(meeting.getStartdate()+""+meeting.getEnddate());
+			//System.out.println(meeting.getStartdate()+""+meeting.getEnddate());
+			
+			System.out.println(Arrays.deepToString(participants).replace("[", "").replaceAll("]", "").trim().replaceAll(" +", ""));
+			meeting.setParticipants(Arrays.deepToString(participants).replace("[", "").replaceAll("]", "").trim().replaceAll(" +", ""));
+			meeting.setOwner(session.getAttribute("email").toString()!=null ? session.getAttribute("email").toString() : "-");
 			
 			System.out.println(meeting);
 			/* FILE SAVE */
@@ -383,6 +392,25 @@ public class MOMController
 			{
 				//	calenderInvite(req, meeting.getSubject(), fromdate, todate);
 				//	sendMail(req, meeting.getParticipants(), meeting.getSubject());
+				
+				List<Meeting> meetingList=null;
+				try {
+						String email = session.getAttribute("email").toString();
+						ResponseEntity<List> resultmeet= getAllUserMeetings(email);
+						meetingList=resultmeet.getBody();
+						if(meetingList.isEmpty() || meetingList==null) {
+						}
+					
+					
+				}catch (Exception e) {
+					// TODO: handle exception
+				}
+				//System.out.println("Meeting List is : "+meetingList);
+				mv.addObject("meetstatus","success");
+				mv.addObject("meetingList",meetingList);
+				mv.addObject("LoginName", session.getAttribute("firstname")+" "+session.getAttribute("lastname"));
+				mv.setViewName("viewMeeting");
+				
 			}
 		
 		}
@@ -390,7 +418,9 @@ public class MOMController
 		{
 			System.out.println("Exception during saveMeeting ::: " + e);
 		}
-		return "home";
+		
+		return mv;
+		
 	}
 	
 	public static void calenderInvite(HttpServletRequest req, String subject, String fromDate, String toDate)
@@ -508,7 +538,7 @@ public class MOMController
            HttpEntity entity=new HttpEntity(getAuthHeader());
            result= restTemplate.exchange(getAllUsers, HttpMethod.GET,entity,List.class);
        }catch (Exception e) {
-           // TODO: handle exception
+           System.out.println(e);
        }
        
        return result;

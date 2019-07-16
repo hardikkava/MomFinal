@@ -42,18 +42,17 @@
                                                 </div>
                                                 <div class="form-group">
                                                     <label>Participants</label>
-                                                    <input class="form-control" placeholder="Enter Participants..." required name="participants" type="text" id="participants">
-                                                	<select name="users[]" id="" class="form-control select2-multi" multiple="multiple" required >
-                                                		
+                                                   <!--  <input class="form-control" placeholder="Enter Participants..." required name="participants" type="text" id="participants">  -->
+                                                	<select name="participant[]" id="" class="form-control select2-multi" multiple="multiple" required >
                                                 		<c:forEach items="${participants}" var="plist">
-                                                			<option value="${plist.email}"><i>${plist.firstname} ${plist.lastname} (${plist.email})</i></option>
+                                                			<option value="${plist.email}">${plist.firstname} ${plist.lastname} (${plist.email})</option>
                                                 		</c:forEach>
                                                     </select>
                                                 </div>
-                                                <div class="form-group">
+                                               <!--  <div class="form-group">
                                                 	<label>Owner</label>
                                                     <input class="form-control" placeholder="Enter Meeting Owner name" required name="owner" type="text">
-                                                </div>
+                                                </div>  -->
                                                 <div class="form-group">
                                                 	<label>Place</label>
                                                     <input class="form-control" placeholder="Enter Place..." required name="place" type="text">
@@ -123,21 +122,17 @@
                 
                    <script>
                     $(document).ready(function() {
-							
-                    	$('.select2-multi').select2();
-                    	
-                    	$(".select2-multi").chosen({
-                    		  no_results_text: "Oops, nothing found!"
-                    		});
                     	 
                     	$('#startdatepicker').datetimepicker({
                     		daysOfWeekDisabled:[0],
+                    		format: 'DD/MMM/YYYY hh:mm A',
                     		minDate: moment()
                     	});
                     	
                         $('#enddatepicker').datetimepicker({
                             useCurrent: false,
                             daysOfWeekDisabled:[0],
+                            format: 'DD/MMM/YYYY hh:mm A',
                             minDate: moment()
                         });
                         $("#startdatepicker").on("dp.change", function (e) {
@@ -146,7 +141,11 @@
                         $("#enddatepicker").on("dp.change", function (e) {
                             $('#startdatepicker').data("DateTimePicker").maxDate(e.date);
                         });
-							
+						
+                		
+                    	$('.select2-multi').select2();
+
+                    	
 							$('#participants').autocomplete({
 								serviceUrl: 'searchParticipants',
 								paramName: "paramName",

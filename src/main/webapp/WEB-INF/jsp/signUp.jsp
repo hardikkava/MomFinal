@@ -24,6 +24,22 @@
         <!-- Custom Fonts -->
         <link href="css/font-awesome.min.css" rel="stylesheet" type="text/css">
 
+		<link href="<c:url value="/css/bootstrap-datetimepicker.css" />" rel="stylesheet">
+		
+		<!-- jQuery -->
+        <script src="js/jquery.min.js"></script>
+
+        <!-- Bootstrap Core JavaScript -->
+        <script src="js/bootstrap.min.js"></script>
+
+        <!-- Metis Menu Plugin JavaScript -->
+        <script src="js/metisMenu.min.js"></script>
+
+        <!-- Custom Theme JavaScript -->
+        <script src="js/startmin.js"></script>
+        
+        <script src="js/moment-with-locales.js"></script>
+		<script src="js/bootstrap-datetimepicker.js"></script>
         
     </head>
     <body>
@@ -42,10 +58,10 @@
                                         <input class="form-control" placeholder="Username" name="username" type="text" autofocus>
                                     </div>
                                     <div class="form-group">
-                                        <input class="form-control" placeholder="Password" name="password" type="password" value="">
+                                        <input class="form-control" placeholder="Email" name="email" type="email">
                                     </div>
                                     <div class="form-group">
-                                        <input class="form-control" placeholder="Email" name="email" type="email">
+                                        <input class="form-control" placeholder="Password" name="password" type="password" value="">
                                     </div>
                                     <div class="form-group">
                                         <input class="form-control" placeholder="Firstname" name="firstname" type="text">
@@ -59,9 +75,8 @@
                                     <div class="form-group">
                                         <input class="form-control" placeholder="Company" name="company" type="text">
                                     </div>
-                                    <div class="form-group">
-                                       	<label>Birthdate</label>
-                                        <input class="form-control"  name="bdate" type="date">
+                                    <div class="form-group" style="position:relative">
+                                        <input type="text" class="form-control" placeholder="BirthDate" required name="bdate" id='birthdatepicker'>
                                     </div>
                                     <input class="btn btn-lg btn-success btn-block" type="submit" name="submit" value="Register">
                                 </fieldset>
@@ -72,17 +87,17 @@
             </div>
         </div>
 
-        <!-- jQuery -->
-        <script src="js/jquery.min.js"></script>
-
-        <!-- Bootstrap Core JavaScript -->
-        <script src="js/bootstrap.min.js"></script>
-
-        <!-- Metis Menu Plugin JavaScript -->
-        <script src="js/metisMenu.min.js"></script>
-
-        <!-- Custom Theme JavaScript -->
-        <script src="js/startmin.js"></script>
+	<script type="text/javascript">
+		 $(document).ready(function(){
+         
+            $("#birthdatepicker").datetimepicker({
+                useCurrent: false,
+                maxDate: moment(),
+                format: 'DD/MMM/YYYY'
+            });
+       });
+   </script>
+  
 
     </body>
 </html>
