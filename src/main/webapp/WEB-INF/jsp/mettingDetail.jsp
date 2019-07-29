@@ -212,7 +212,7 @@
                                  	    <div class="col-lg-8 col-sm-8 col-xs-12" style="padding-left: 36px;">
                                  	 	<label style="padding-top: 24px;">Tasks</label><br/>
                                  	 	
-                                 	 	<div class="tasklist" style="border: dotted #CCC 1px;border-radius: 3px;margin-bottom: 12px;">
+                                 	 	<div class="tasklist" style="border: dotted #CCC 1px;border-radius: 3px;margin-bottom: 12px;padding-top: 11px;padding-right: 11px;padding-left: 11px;">
                                  	 		<table id="taskexample" class="table" style="width:100%" cellspacing="0" >
 												<thead class="thead-dark">
 												<tr>

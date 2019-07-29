@@ -99,8 +99,8 @@ public class MOMController
     @Value("${getUserCompletedTaskCounts}")
     String getUserCompletedTaskCounts;
 	
-/*	@Value("${fileLocation}")
-	String fileLocation;*/
+	@Value("${fileLocation}")
+	String fileLocation;
     
     @Value("${getAllUsers}")
     String getAllUsers;
@@ -230,10 +230,17 @@ public class MOMController
 		}else {
 			
 			List<User> userList= null;
+			List<Meeting> refmeetList= null;
+			
 			ResponseEntity<List> result=getAllUsers();
 			userList=result.getBody();
-				
+			
+			String email = session.getAttribute("email").toString();
+			ResponseEntity<List> resultmeet= getAllUserMeetings(email);
+			refmeetList=resultmeet.getBody();
+	
 			mv.addObject("participants",userList);
+			mv.addObject("refermeetings",refmeetList);
 			mv.addObject("LoginName", session.getAttribute("firstname")+" "+session.getAttribute("lastname"));
 			mv.setViewName("createMeeting");
 			return mv;
@@ -352,7 +359,7 @@ public class MOMController
 	}
 	
 	@RequestMapping("/saveMeeting")
-	public ModelAndView saveMeeting(HttpSession session, HttpServletRequest req, Meeting meeting,  @RequestParam("participant[]") String[] participants,/*@RequestParam("uploadfile") MultipartFile uploadfile,*/ @RequestParam(value = "fromdate") String fromdate, @RequestParam(value = "todate") String todate) 
+	public ModelAndView saveMeeting(HttpSession session, HttpServletRequest req, Meeting meeting, @RequestParam("participant[]") String[] participants, @RequestParam("refermeeting[]") String[] refmeetings, @RequestParam("uploadfile") MultipartFile[] uploadfile, @RequestParam(value = "fromdate") String fromdate, @RequestParam(value = "todate") String todate) 
 	{
 		ModelAndView mv = new ModelAndView();
 		
@@ -372,15 +379,31 @@ public class MOMController
 			System.out.println(startTs+""+endTs+"");
 			//System.out.println(meeting.getStartdate()+""+meeting.getEnddate());
 			
-			System.out.println(Arrays.deepToString(participants).replace("[", "").replaceAll("]", "").trim().replaceAll(" +", ""));
-			meeting.setParticipants(Arrays.deepToString(participants).replace("[", "").replaceAll("]", "").trim().replaceAll(" +", ""));
-			meeting.setOwner(session.getAttribute("email").toString()!=null ? session.getAttribute("email").toString() : "-");
 			
-			System.out.println(meeting);
+			meeting.setParticipants(Arrays.toString(participants).replace("[", "").replaceAll("]", "").trim().replaceAll(" +", ""));
+			meeting.setOwner(session.getAttribute("email").toString()!=null ? session.getAttribute("email").toString() : "-");			
+			meeting.setReferancemeeting(Arrays.toString(refmeetings).replace("[", "").replaceAll("]", "").trim().replaceAll(" +", ""));
+			
 			/* FILE SAVE */
-		/*	byte[] bytes = file.getBytes(); 
-			Path path = Paths.get(fileLocation + file.getOriginalFilename().toString());
-			Files.write(path, bytes);*/
+			//byte[] bytes = file.getBytes(); 
+		//	Path path = Paths.get(fileLocation + file.getOriginalFilename().toString());
+		//	Files.write(path, bytes);
+			
+			for(int i=0;i<uploadfile.length;i++) {
+				MultipartFile mfile = uploadfile[i];
+			//	System.out.println(mfile.getOriginalFilename());
+				if(!mfile.getOriginalFilename().isEmpty()) {
+					try{
+						byte[] bytes = mfile.getBytes();
+						Path path = Paths.get(fileLocation + mfile.getOriginalFilename().toString());
+						Files.write(path, bytes);
+					}
+					catch(Exception e){
+						System.out.println("File Upload EXCEPTION :::: "+e);
+					}
+				}
+			}
+			
 			
 			RestTemplate restTemplate = new RestTemplate();
 			

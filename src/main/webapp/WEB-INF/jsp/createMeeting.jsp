@@ -13,6 +13,32 @@
         <title>MOM</title>
 		<%@include file="headerCssJs.jsp" %>
 		
+		<script type="text/javascript">
+		
+			$(".attchedfiles").change(function(event){
+				var c=0;
+				if($(".attchedfiles")[0].files.length > 5) {
+				alert("Maximum 5 files allowed at a time.");
+				}
+			
+				$.each($(".attchedfiles").prop("files"),function(k,v){
+					var siz = v['size'];
+					if(siz > 10485760)
+						c=c+1;
+				});
+				if(c>0)
+					alert("Size more than 10 MB");
+				
+				$.each($(".attchedfiles").prop("files"),function(k,v){
+					var ext = v['name'].split('.').pop().toLowerCase();
+					if($.inArray(ext,['jpg','jpeg','gif','png', 'txt','doc','docx','pdf','xls','xlsx']) == -1)
+						c=c+1;
+				});
+				if(c>0)
+					alert("Choose only images with (.jpg, .jpeg, .gif, .png, .txt, .doc, .docx, .pdf, .xls, .xlsx) extension.");
+		
+		</script>
+		
 	</head>
     <body>
 
@@ -53,7 +79,7 @@
                           
                                     <div class="row">
                                         <div class="col-lg-6">
-                                            <form role="form" method="post" action="saveMeeting">
+                                            <form role="form" method="post" action="saveMeeting" enctype="multipart/form-data">
                                                 <div class="form-group">
                                                 <label>Subject</label>
                                                     <input class="form-control" placeholder="Enter Meeting Subject..." required name="subject" type="text" id="subject">
@@ -65,7 +91,7 @@
                                                 		<c:forEach items="${participants}" var="plist">
                                                 			<option value="${plist.email}">${plist.firstname} ${plist.lastname} (${plist.email})</option>
                                                 		</c:forEach>
-                                                    </select>
+                                                    </select><a href='#' data-target='#newuserModal' data-toggle='modal'>[+ Add New]</a>
                                                 </div>
                                                <!--  <div class="form-group">
                                                 	<label>Owner</label>
@@ -81,7 +107,7 @@
                                                 </div>
                                                 <div class="form-group">
                                                 <label>File(s)</label>
-                                                    <input type="file" name="uploadfile">
+                                                    <input type="file" class="attchedfiles" name="uploadfile[]" placeholder="select file(s)..." multiple="multiple">
                                                 </div>
                                                 <div class="form-group">
                                                 <label>Category</label>
@@ -108,7 +134,12 @@
                                                 </div>
                                                 <div class="form-group">
                                                 <label>Reference Meeting </label>
-                                                    <input class="form-control" placeholder="Refer Meeting..." name="referancemeeting" type="text">
+                                                   <!-- <input class="form-control" placeholder="Refer Meeting..." name="referancemeeting" type="text">  -->
+													<select name="refermeeting[]" id="" class="form-control select2-multi-meet" multiple="multiple" required >
+                                                		<c:forEach items="${refermeetings}" var="reflist">
+                                                			<option value="${reflist.meetingid}"> MEET${reflist.meetingid} [ ${reflist.subject} ]</option>
+                                                		</c:forEach>
+                                                    </select>
                                                 </div>
                                                 
                                                 <div class="form-group" style="position:relative">
@@ -162,7 +193,7 @@
 						
                 		
                     	$('.select2-multi').select2();
-
+                    	$('.select2-multi-meet').select2();
                     	
 							$('#participants').autocomplete({
 								serviceUrl: 'searchParticipants',

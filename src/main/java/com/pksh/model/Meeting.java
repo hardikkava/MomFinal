@@ -15,7 +15,7 @@ public class Meeting
     private int recurring;
     private int recurringapproch;
     private int recurringperiod;
-    private int referancemeeting;
+    private String referancemeeting;
     private String custom1;
     private String custom2;
     private String custom3;
@@ -91,10 +91,10 @@ public class Meeting
 	public void setRecurringperiod(int recurringperiod) {
 		this.recurringperiod = recurringperiod;
 	}
-	public int getReferancemeeting() {
+	public String getReferancemeeting() {
 		return referancemeeting;
 	}
-	public void setReferancemeeting(int referancemeeting) {
+	public void setReferancemeeting(String referancemeeting) {
 		this.referancemeeting = referancemeeting;
 	}
 	public String getCustom1() {
