@@ -58,8 +58,8 @@
 								<tr>
 										<td><a href="getMeetingDetail?meetid=${mlist.meetingid}" ><b>${mlist.subject}</b><br/><i> ${mlist.note}</i></a></td>
 										<td>${mlist.place}</td>
-										<td>${fn:replace(startdate,'T',' ')}</td>
-										<td>${fn:replace(enddate,'T',' ')}</td>
+										<td>${fn:substring(mlist.startdate,0,16)}</td>
+										<td>${fn:substring(mlist.enddate,0,16)}</td>
 										<td>${mlist.owner}</td>
 									</tr>
 								</c:forEach>

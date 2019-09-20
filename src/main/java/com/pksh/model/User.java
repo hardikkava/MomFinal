@@ -15,6 +15,7 @@ public class User
 	private Timestamp birthdate;
 	private Timestamp createddate;
 	private Timestamp updateddate;
+	private String guest;
 	
 	public String getEmail() {
 		return email;
@@ -82,4 +83,22 @@ public class User
 	public void setUpdateddate(Timestamp updateddate) {
 		this.updateddate = updateddate;
 	}
+	public String getGuest() {
+		return guest;
+	}
+	public void setGuest(String guest) {
+		this.guest = guest;
+	}
+	
+	@Override
+	public String toString() {
+		return "User [userid=" + userid + ", username=" + username + ", password=" + password + ", email=" + email
+				+ ", firstname=" + firstname + ", lastname=" + lastname + ", address=" + address + ", company="
+				+ company + ", birthdate=" + birthdate + ", createddate=" + createddate + ", updateddate=" + updateddate
+				+ ", guest=" + guest + "]";
+	}
+	
+
+
+
 }

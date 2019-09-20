@@ -14,29 +14,9 @@
 		<%@include file="headerCssJs.jsp" %>
 		
 		<script type="text/javascript">
-		
-			$(".attchedfiles").change(function(event){
-				var c=0;
-				if($(".attchedfiles")[0].files.length > 5) {
-				alert("Maximum 5 files allowed at a time.");
-				}
-			
-				$.each($(".attchedfiles").prop("files"),function(k,v){
-					var siz = v['size'];
-					if(siz > 10485760)
-						c=c+1;
-				});
-				if(c>0)
-					alert("Size more than 10 MB");
-				
-				$.each($(".attchedfiles").prop("files"),function(k,v){
-					var ext = v['name'].split('.').pop().toLowerCase();
-					if($.inArray(ext,['jpg','jpeg','gif','png', 'txt','doc','docx','pdf','xls','xlsx']) == -1)
-						c=c+1;
-				});
-				if(c>0)
-					alert("Choose only images with (.jpg, .jpeg, .gif, .png, .txt, .doc, .docx, .pdf, .xls, .xlsx) extension.");
-		
+
+	
+					
 		</script>
 		
 	</head>
@@ -63,12 +43,34 @@
 						<div class="modal-content">         
 							<div class="modal-header">
 								<button type="button" class="close" data-dismiss="modal"> &times;</button>            
-								<h4 class="modal-title" id="myModalLabel"> Edit Meeting </h4>   
-	                       				</div>
-	                       				<div class="modal-body">
-	                       				</div>
-	                       			</div>
-	                       		 </div>
+								<h4 class="modal-title" id="myModalLabel"> Add Participant </h4>   
+	                    </div>
+               				 	<form role="form" method="post">
+               					<div class="modal-body">
+               						 <div class="form-group">
+                                      	<label>FirstName</label>&nbsp;<span style="color:red;">*</span>
+                                       <input class="form-control" placeholder="Enter FirstName" id="fname" type="text">
+                                     </div>
+               						 <div class="form-group">
+                                      	<label>LastName</label>&nbsp;<span style="color:red;">*</span>
+                                       <input class="form-control" placeholder="Enter LastName" id="lname" type="text">
+                                     </div>
+                                     <div class="form-group">
+                                      	<label>Email</label>&nbsp;<span style="color:red;">*</span>
+                                       <input class="form-control" placeholder="Enter Participant Email Address" id="useremail" type="email">
+                                     </div>
+                				</div>
+                				<div class="modal-footer">
+                					<div class="pull-right">
+                                          <input class="btn btn-primary" id="btnaddguest" type="button" value="Add">
+                                          <input class="btn btn-default" type="button" data-dismiss="modal" value="Cancel">
+                                    </div>
+                				</div>	
+                				</form>
+                		   	</div>
+	                       </div>
+	                    </div>
+	                       		 
                     </div>
                             				
                     
@@ -81,29 +83,29 @@
                                         <div class="col-lg-6">
                                             <form role="form" method="post" action="saveMeeting" enctype="multipart/form-data">
                                                 <div class="form-group">
-                                                <label>Subject</label>
+                                                <label>Subject</label>&nbsp;<span style="color:red;">*</span>
                                                     <input class="form-control" placeholder="Enter Meeting Subject..." required name="subject" type="text" id="subject">
                                                 </div>
                                                 <div class="form-group">
-                                                    <label>Participants</label>
+                                                    <label>Participants</label>&nbsp;<span style="color:red;">*</span>
                                                    <!--  <input class="form-control" placeholder="Enter Participants..." required name="participants" type="text" id="participants">  -->
-                                                	<select name="participant[]" id="" class="form-control select2-multi" multiple="multiple" required >
+                                                	<select name="participant[]" id="userlst" class="form-control select2-multi" multiple="multiple" required >
                                                 		<c:forEach items="${participants}" var="plist">
                                                 			<option value="${plist.email}">${plist.firstname} ${plist.lastname} (${plist.email})</option>
                                                 		</c:forEach>
                                                     </select><a href='#' data-target='#newuserModal' data-toggle='modal'>[+ Add New]</a>
                                                 </div>
                                                <!--  <div class="form-group">
-                                                	<label>Owner</label>
+                                                	<label>Owner</label><span style="color:red;">*</span>
                                                     <input class="form-control" placeholder="Enter Meeting Owner name" required name="owner" type="text">
                                                 </div>  -->
                                                 <div class="form-group">
-                                                	<label>Place</label>
+                                                	<label>Place</label>&nbsp;<span style="color:red;">*</span>
                                                     <input class="form-control" placeholder="Enter Place..." required name="place" type="text">
                                                 </div>
                                                 <div class="form-group">
                                                 <label>Notes</label>
-                                                    <textarea class="form-control" placeholder="Enter Note..." required rows="3" name="note"></textarea>
+                                                    <textarea class="form-control" placeholder="Enter Note..." rows="3" name="note"></textarea>
                                                 </div>
                                                 <div class="form-group">
                                                 <label>File(s)</label>
@@ -111,7 +113,7 @@
                                                 </div>
                                                 <div class="form-group">
                                                 <label>Category</label>
-                                                    <input class="form-control" placeholder="Enter Catagory..." required name="category" type="text">
+                                                    <input class="form-control" placeholder="Enter Catagory..." name="category" type="text">
                                                 </div>
                                                 <div class="form-group">
                                                     <label>Recurring : </label>
@@ -135,26 +137,26 @@
                                                 <div class="form-group">
                                                 <label>Reference Meeting </label>
                                                    <!-- <input class="form-control" placeholder="Refer Meeting..." name="referancemeeting" type="text">  -->
-													<select name="refermeeting[]" id="" class="form-control select2-multi-meet" multiple="multiple" required >
+													<select name="refermeeting[]" id="" class="form-control select2-multi-meet" multiple="multiple" >
                                                 		<c:forEach items="${refermeetings}" var="reflist">
-                                                			<option value="${reflist.meetingid}"> MEET${reflist.meetingid} [ ${reflist.subject} ]</option>
+                                                			<option value="${reflist.meetingid}"> MEET${reflist.meetingid} [${reflist.subject}]</option>
                                                 		</c:forEach>
                                                     </select>
                                                 </div>
                                                 
                                                 <div class="form-group" style="position:relative">
-                                                	<label>Start date</label>
+                                                	<label>Start date</label>&nbsp;<span style="color:red;">*</span>
                                                     <input type="text" class="form-control" required name="fromdate" id='startdatepicker'>
                                                 </div>
                                     
 										  		<div class="form-group" style="position:relative">
-                                                	<label>End date</label>
+                                                	<label>End date</label>&nbsp;<span style="color:red;">*</span>
                                                     <input type="text" class="form-control" required name="todate" id="enddatepicker">
                                                 </div>
                                           
 									          
                                                 <div class="pull-right">
-                                                	<button type="submit" class="btn btn-primary">Submit</button>
+                                                	<button type="submit" id="btnsub" class="btn btn-primary">Submit</button>
                                                 	<button type="button" class="btn btn-default">Cancel</button>
                                                 </div>
                                             </form>
@@ -195,7 +197,134 @@
                     	$('.select2-multi').select2();
                     	$('.select2-multi-meet').select2();
                     	
-							$('#participants').autocomplete({
+                    	$(".attchedfiles").change(function(event){
+            				var c=0;
+            				if($(".attchedfiles")[0].files.length > 5) {
+            					alert("Maximum 5 files allowed.");
+            				}
+            			
+            				$.each($(".attchedfiles").prop("files"),function(k,v){
+            					var siz = v['size'];
+            					if(siz > 5242880)
+            						c=c+1;
+            				});
+            				if(c>0)
+            					alert("Size cannot be more than 5 MB");
+            				
+            				$.each($(".attchedfiles").prop("files"),function(k,v){
+            					var ext = v['name'].split('.').pop().toLowerCase();
+            					if($.inArray(ext,['jpg','jpeg','gif','png', 'txt','doc','docx','pdf','xls','xlsx','ppt','pptx']) == -1)
+            						c=c+1;
+            				});
+            				if(c>0)
+            					alert("Choose only images with (.jpg, .jpeg, .gif, .png, .txt, .doc, .docx, .pdf, .xls, .xlsx, .ppt, .pptx) extension.");
+
+            			});
+            						
+                    	$("#btnsub").click(function(event){
+            				var c=0;
+            				if($(".attchedfiles")[0].files.length > 5) {
+            					alert("Maximum 5 files allowed.");
+            				}
+            			
+            				$.each($(".attchedfiles").prop("files"),function(k,v){
+            					var siz = v['size'];
+            					if(siz > 5242880)
+            						c=c+1;
+            				});
+            				if(c>0)
+            					alert("Size cannot be more than 5 MB");
+            				
+            				$.each($(".attchedfiles").prop("files"),function(k,v){
+            					var ext = v['name'].split('.').pop().toLowerCase();
+            					if($.inArray(ext,['jpg','jpeg','gif','png', 'txt','doc','docx','pdf','xls','xlsx','ppt','pptx']) == -1)
+            						c=c+1;
+            				});
+            				if(c>0)
+            					alert("Choose only images with (.jpg, .jpeg, .gif, .png, .txt, .doc, .docx, .pdf, .xls, .xlsx, .ppt, .pptx) extension.");
+
+            			});
+
+
+                    	$("#btnaddguest").click(function(event){
+
+                    		if($("#fname").val() == ''){
+								alert("Enter firstname");
+								return false;
+                        	}
+                    		if($("#lname").val() == ''){
+								alert("Enter lastname");
+								return false;
+                        	}
+                    		if($("#useremail").val() == ''){
+								alert("Enter email");
+								return false;
+                        	}
+                    		email_regex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/i;
+                    		   if(!email_regex.test($("#useremail").val())){ alert('this is not valid email'); return false;  }
+                    		   
+                    		$.get("isEmailAlreadyRegistered", { useremail:$("#useremail").val() } )
+								.done(function(data){
+									if(data == "email is already registered"){
+                       		   			alert("This email address is already registered. kinldy add new email");
+										return false;
+                                	}else{
+                                		$.post("addGuestUser", 
+          	                       			  { fname: $("#fname").val(),
+          	                       			    lname: $("#lname").val(),
+          	                       			    email: $("#useremail").val()
+          	                       			   }, 
+          	                       			  function(result){
+               	                       			  if(result == "true"){
+               	                       				alert("User Added Successfully.");
+               	                       			 	var newOption = $('<option value="'+$("#useremail").val()+'">'+$("#fname").val()+" "+$("#lname").val()+" ("+$("#useremail").val()+")"+'</option>');
+		               	                       		$('#userlst').append(newOption);
+			               	                       	$("#fname").val('');
+	           	                       				$("#lname").val('');
+	           	                       				$("#useremail").val('');
+	           	                       			 	$('#newuserModal').modal('toggle');
+               	                       		 
+                           	                      }else{
+                           	                    	alert("Error during adding new user. try after sometime");
+                           	                    	$("#fname").val('');
+               	                       				$("#lname").val('');
+               	                       				$("#useremail").val('');
+                           	                    	$('#newuserModal').modal('toggle');
+                               	                  }
+          	                       		   		
+                                  		});
+                                    }
+
+                                	
+                			});
+                    		
+                    	/*	$.post("isEmailAlreadyRegistered", 
+                       			  {  useremail: $("#useremail").val()
+                       			   }, 
+                       			  function(result){
+                            		alert(result);
+                            		if(result == 'Email is already registered'){
+                       		   			alert("Email is already registered. kinldy add new email");
+										return false;
+                                	}else{
+
+                                		alert("called");
+                                		$.post("addGuestUser", 
+            	                       			  { fname: $("#fname").val(),
+            	                       			    lname: $("#lname").val(),
+            	                       			    email: $("#useremail").val()
+            	                       			   }, 
+            	                       			  function(result){
+            	                       		   		alert("User Added Successfully.");
+                                    		});
+            											
+
+                                        }
+                      		});  */
+						});
+                    	
+                    	
+						 /*$('#participants').autocomplete({
 								serviceUrl: 'searchParticipants',
 								paramName: "paramName",
 								delimiter: ",",
@@ -212,7 +341,7 @@
 							        
 							    }
 							    
-							});
+							}); */
 							
 							
 							

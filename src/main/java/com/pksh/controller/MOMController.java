@@ -99,8 +99,8 @@ public class MOMController
     @Value("${getUserCompletedTaskCounts}")
     String getUserCompletedTaskCounts;
 	
-	@Value("${fileLocation}")
-	String fileLocation;
+	@Value("${docLocation}")
+	String docLocation;
     
     @Value("${getAllUsers}")
     String getAllUsers;
@@ -247,6 +247,14 @@ public class MOMController
 		}
 	}
 	
+	public void getAllUserDynamic() {
+		
+		List<User> userList= null;
+		ResponseEntity<List> result=getAllUsers();
+		userList=result.getBody();
+	}
+	
+	
 	@RequestMapping("/viewMeeting")
 	public ModelAndView viewMeeting(HttpSession session) {
 		ModelAndView mv=new ModelAndView();
@@ -254,21 +262,22 @@ public class MOMController
 			mv.setViewName("login");
 			return mv; 
 		}else {
+			System.out.println("Called");
 			List<Meeting> meetingList=null;
 			try {
 					String email = session.getAttribute("email").toString();
 					ResponseEntity<List> result= getAllUserMeetings(email);
 					meetingList=result.getBody();
 					if(meetingList.isEmpty() || meetingList==null) {
-						
-					
-				}
-				
+					}
+					for(Meeting meet: meetingList) {
+						System.out.println(meet.getStartdate()+"__"+meet.getEnddate());
+					}
 				
 			}catch (Exception e) {
 				// TODO: handle exception
 			}
-			//System.out.println("Meeting List is : "+meetingList);
+			System.out.println("Meeting List is : "+meetingList);
 			mv.addObject("meetingList",meetingList);
 			mv.addObject("LoginName", session.getAttribute("firstname")+" "+session.getAttribute("lastname"));
 			mv.setViewName("viewMeeting");
@@ -319,6 +328,34 @@ public class MOMController
 		return searchList;
 	}
 	
+	@RequestMapping(value="/isEmailAlreadyRegistered")
+	public @ResponseBody String isEmailAlreadyRegistered(@RequestParam("useremail") String email) 
+	{
+		ResponseEntity<List> result = null;
+		String msg="";
+		try
+		{
+			RestTemplate restTemplate = new RestTemplate();
+			HttpEntity entity = new HttpEntity(getAuthHeader());
+			List<User> userList = null;
+			
+			result = restTemplate.exchange(SearchParticipants + email, HttpMethod.GET, entity, List.class);
+			if(result.getStatusCodeValue() == 200) {
+				System.out.println("Email is already registered");
+				msg = "Email is already registered";
+			}
+		}
+		catch(Exception e)
+		{
+			System.out.println("Exception during searching ::: "+e);
+			msg = "Email is not registered";
+		}
+		
+		return msg;
+
+	}
+	
+	
 	@RequestMapping("/registerAccount")
 	public String signUp() 
 	{
@@ -336,7 +373,7 @@ public class MOMController
 			Date date = sdf.parse(bdate);
 			Timestamp ts=new Timestamp(date.getTime());
 			user.setBirthdate(ts);
-			
+			user.setGuest("no");
 			user.setEmail(user.getEmail().trim().replaceAll(" +", ""));
 			
 			RestTemplate restTemplate = new RestTemplate();
@@ -379,14 +416,14 @@ public class MOMController
 			System.out.println(startTs+""+endTs+"");
 			//System.out.println(meeting.getStartdate()+""+meeting.getEnddate());
 			
-			
 			meeting.setParticipants(Arrays.toString(participants).replace("[", "").replaceAll("]", "").trim().replaceAll(" +", ""));
 			meeting.setOwner(session.getAttribute("email").toString()!=null ? session.getAttribute("email").toString() : "-");			
 			meeting.setReferancemeeting(Arrays.toString(refmeetings).replace("[", "").replaceAll("]", "").trim().replaceAll(" +", ""));
 			
+			
 			/* FILE SAVE */
 			//byte[] bytes = file.getBytes(); 
-		//	Path path = Paths.get(fileLocation + file.getOriginalFilename().toString());
+		//	Path path = Paths.get(docLocation + file.getOriginalFilename().toString());
 		//	Files.write(path, bytes);
 			
 			for(int i=0;i<uploadfile.length;i++) {
@@ -395,7 +432,7 @@ public class MOMController
 				if(!mfile.getOriginalFilename().isEmpty()) {
 					try{
 						byte[] bytes = mfile.getBytes();
-						Path path = Paths.get(fileLocation + mfile.getOriginalFilename().toString());
+						Path path = Paths.get(docLocation +"1"+ mfile.getOriginalFilename().toString());
 						Files.write(path, bytes);
 					}
 					catch(Exception e){
@@ -554,7 +591,7 @@ public class MOMController
         return result;
   }
 	
-   private ResponseEntity<List> getAllUsers(){
+   public ResponseEntity<List> getAllUsers(){
        ResponseEntity<List> result=null;
        try {
            RestTemplate restTemplate =new RestTemplate();
@@ -694,6 +731,38 @@ public class MOMController
 			System.out.println("Exception During Sendmail ::: "+e);
 		}
 	}
+	
+	
+	@RequestMapping(value = "/addGuestUser", method=RequestMethod.POST)
+	public @ResponseBody String addGuestUser(HttpSession session, @RequestParam("fname") String fname, @RequestParam("lname") String lname, @RequestParam("email") String email){
+		
+		User user = new User();
+		RestTemplate restTemplate = new RestTemplate();
+		ResponseEntity<Boolean> result = null;
+		String status="false";
+		
+		try {
+			user.setFirstname(fname);
+			user.setLastname(lname);
+			user.setUsername(fname+""+lname);
+			user.setEmail(email);
+			user.setGuest("yes");
+			
+			HttpEntity<User> entity = new HttpEntity<>(user, getAuthHeader());
+			result = restTemplate.exchange(RegisterURL, HttpMethod.POST, entity, Boolean.class);
+			
+			System.out.println(result.getStatusCodeValue());
+			if(result.getStatusCodeValue() == 200)
+				status="true";
+			
+		}catch(Exception e)
+		{
+			System.out.println("Exception during signup ::: " + e);
+		}
+		
+		return status;
+	}
+	
 	
 	@RequestMapping("/displayEditMeeting")
 	public ModelAndView displayEditMeeting(@RequestParam(value="meetingid") String meetingid) 

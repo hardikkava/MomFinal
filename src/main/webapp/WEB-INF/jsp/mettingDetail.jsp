@@ -161,7 +161,8 @@
                             </div>
                             
                            <!--  <hr style="width: 97%;margin-top: 11px;"> -->
-                                 <div class="col-lg-8 col-sm-8 col-xs-12">
+                           <div class="row">
+                                 <div style="padding-left: 40px;" class="col-lg-8 col-sm-8 col-xs-12">
                                  	<table style="width:100%;">
                                  	<tr><td><b>StartDate&nbsp;&nbsp;&nbsp;</b></td><td>${fn:substring(meeting.startdate,0,16)}</td>
                                         <td><b>EndDate&nbsp;&nbsp;&nbsp;</b></td><td>${fn:substring(meeting.enddate,0,16)}</td></tr>
@@ -178,16 +179,36 @@
                                  	<tr><td><b>Place&nbsp;&nbsp;&nbsp;</b></td><td>${meeting.place}</td></tr>
                                  	<tr><td><b>CreatedDate&nbsp;&nbsp;&nbsp;</b></td><td>${fn:substring(meeting.createddate,0,16)}</td></tr>
                                  	<tr><td><b>Last Update&nbsp;&nbsp;&nbsp;</b></td><td>${fn:substring(meeting.updateddate,0,16)}</td></tr>
-                                 	<tr><td><b>Participants&nbsp;&nbsp;&nbsp;</b></td><td></td></tr>
+                                 	<tr><td><b>Participants&nbsp;&nbsp;&nbsp;</b></td>
+                                 	<td><div style="height: 12px;">
+                                 		<select name="participant[]" id="userlst" class="form-control select2-multi" multiple="multiple" required >
+                                     		
+                                     	<c:forEach items="${tempselectuserList}" var="selectedlist">
+                                     		<c:forEach items="${participants}" var="plist">
+                                   				<c:set var="comp_email" value="${plist.email}"></c:set>
+                                   				<c:choose>
+                                   				<c:when test="${comp_email eq selectedlist}">
+                                   					<option selected="selected" value="${plist.email}">${plist.firstname} ${plist.lastname} (${plist.email})</option>
+                                   				</c:when>
+                                   				<c:otherwise>
+                                   					<option value="${plist.email}">${plist.firstname} ${plist.lastname} (${plist.email})</option>
+                                     			</c:otherwise>
+                                     		</c:choose>
+                                     		</c:forEach>
+                                     		
+                                     	</c:forEach>
+                                         </select><!-- <a href='#' data-target='#newuserModal' data-toggle='modal'>[+ Add New]</a>  -->
+                                 	</div></td></tr>
                                  	</table>
                                  	
                                  </div>
                                  <!-- /.col-lg-4 (nested) -->
+                                 </div>
                                  
                                  <div class="row">
                                  	 <div class="col-lg-8 col-sm-8 col-xs-12" style="padding-left: 36px;">
                                  	 	<label>Notes</label><br/>
-                                 		<textarea  class="form-control" name="notes">${meeting.note}</textarea>
+                                 		<textarea disabled="disabled"  class="form-control" name="notes">${meeting.note}</textarea>
                                  	
                                  	 </div>
                                  	  <div class="col-lg-4 col-sm-4 col-xs-12">
@@ -348,25 +369,7 @@
                             $('#startdatepicker').data("DateTimePicker").maxDate(e.date);
                         });
 							
-							$('#participants').autocomplete({
-								serviceUrl: 'searchParticipants',
-								paramName: "paramName",
-								delimiter: ",",
-							    transformResult: function(response) {
-							    	
-							        return {
-							        	
-							            suggestions: $.map($.parseJSON(response), function(item) {
-							            	
-							                return { value: item.email, data: item.username };
-							            })
-							            
-							        };
-							        
-							    }
-							    
-							});
-							
+                        $('.select2-multi').select2();	
 							
 							
 						});

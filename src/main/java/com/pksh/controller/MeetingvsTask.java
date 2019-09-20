@@ -1,5 +1,7 @@
 package com.pksh.controller;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpSession;
@@ -18,6 +20,9 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.pksh.model.Meeting;
+import com.pksh.model.User;
+
+import edu.emory.mathcs.backport.java.util.Arrays;
 
 
 
@@ -26,6 +31,9 @@ public class MeetingvsTask {
 	
 	@Value("${displayEditMeeting}")
 	String displayEditMeeting;
+	
+	@Value("${getAllUsers}")
+	String getAllUsers;
 	
 	public static HttpHeaders getAuthHeader()
 	{
@@ -54,11 +62,30 @@ public class MeetingvsTask {
 			try
 			{
 				HttpEntity entity = new HttpEntity(getAuthHeader());
+				List<User> selectuserList= null;
+				List<User> userList = null;
+				String[] tempselectuserList=null;
+				
+				ResponseEntity<List> userresult= getAllUsers();
+				userList = userresult.getBody();
 				
 				ResponseEntity<Meeting> result = restTemplate.exchange(displayEditMeeting + meetid, HttpMethod.GET, entity, Meeting.class);
 				Meeting meeting = result.getBody();
+			
+				tempselectuserList = meeting.getParticipants().split(",");
+				
+				/*for(int i=0;i<tempselectuserList.length;i++) {
+					
+						System.out.println(userList.get(0).getEmail());
+				}*/
+					
+				System.out.println(meeting.getStartdate()+"__"+meeting.getEnddate());
 				
 				mv.addObject("meeting", meeting);
+				mv.addObject("participants",userList);
+				mv.addObject("tempselectuserList",tempselectuserList);
+				//mv.addObject("selectedparticipants",selectuserList);
+				
 			}
 			catch(Exception e)
 			{
@@ -71,4 +98,17 @@ public class MeetingvsTask {
 		
 	}
 
+	   public ResponseEntity<List> getAllUsers(){
+	       ResponseEntity<List> result=null;
+	       try {
+	           RestTemplate restTemplate =new RestTemplate();
+	           HttpEntity entity=new HttpEntity(getAuthHeader());
+	           result= restTemplate.exchange(getAllUsers, HttpMethod.GET,entity,List.class);
+	       }catch (Exception e) {
+	           System.out.println(e);
+	       }
+	       
+	       return result;
+	 }
+	   
 }
