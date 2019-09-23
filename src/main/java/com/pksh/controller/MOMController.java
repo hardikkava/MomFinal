@@ -396,7 +396,7 @@ public class MOMController
 	}
 	
 	@RequestMapping("/saveMeeting")
-	public ModelAndView saveMeeting(HttpSession session, HttpServletRequest req, Meeting meeting, @RequestParam("participant[]") String[] participants, @RequestParam("refermeeting[]") String[] refmeetings, @RequestParam("uploadfile") MultipartFile[] uploadfile, @RequestParam(value = "fromdate") String fromdate, @RequestParam(value = "todate") String todate) 
+	public ModelAndView saveMeeting(HttpSession session, HttpServletRequest req, Meeting meeting, @RequestParam("participant[]") String[] participants, @RequestParam(value = "refermeeting[]", required = false) String[] refmeetings, @RequestParam("uploadfile") MultipartFile[] uploadfile, @RequestParam(value = "fromdate") String fromdate, @RequestParam(value = "todate") String todate) 
 	{
 		ModelAndView mv = new ModelAndView();
 		
@@ -418,7 +418,9 @@ public class MOMController
 			
 			meeting.setParticipants(Arrays.toString(participants).replace("[", "").replaceAll("]", "").trim().replaceAll(" +", ""));
 			meeting.setOwner(session.getAttribute("email").toString()!=null ? session.getAttribute("email").toString() : "-");			
-			meeting.setReferancemeeting(Arrays.toString(refmeetings).replace("[", "").replaceAll("]", "").trim().replaceAll(" +", ""));
+			
+			if(refmeetings != null && refmeetings.length > 0)
+				meeting.setReferancemeeting(Arrays.toString(refmeetings).replace("[", "").replaceAll("]", "").trim().replaceAll(" +", ""));
 			
 			
 			/* FILE SAVE */

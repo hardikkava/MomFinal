@@ -181,7 +181,20 @@
                                  	<tr><td><b>Last Update&nbsp;&nbsp;&nbsp;</b></td><td>${fn:substring(meeting.updateddate,0,16)}</td></tr>
                                  	<tr><td><b>Participants&nbsp;&nbsp;&nbsp;</b></td>
                                  	<td><div style="height: 12px;">
-                                 		<select name="participant[]" id="userlst" class="form-control select2-multi" multiple="multiple" required >
+<!--                                  		<div class="userlist"> -->
+<%--                                  			<c:forEach items="${tempselectuserList}" var="selectedlist">  --%>
+<%--                                      		<c:forEach items="${participants}" var="plist"> --%>
+<%--                                    				<c:set var="comp_email" value="${plist.email}"></c:set> --%>
+<%--                                    				<c:choose> --%>
+<%--                                    				<c:when test="${comp_email eq selectedlist}"> --%>
+<%--                                    					<label>${plist.firstname} ${plist.lastname} (${plist.email})</label> --%>
+<%--                                    				</c:when> --%>
+                                   				
+<%--                                      		</c:choose> --%>
+<%--                                      		</c:forEach> --%>
+<%--                                      		</c:forEach> --%>
+<!--                                  		</div> -->
+                                 		<select name="participant[]" id="userlst" disabled="disabled" class="form-control select2-multi" multiple="multiple" required >
                                      		
                                      	<c:forEach items="${tempselectuserList}" var="selectedlist">
                                      		<c:forEach items="${participants}" var="plist">
@@ -197,7 +210,7 @@
                                      		</c:forEach>
                                      		
                                      	</c:forEach>
-                                         </select><!-- <a href='#' data-target='#newuserModal' data-toggle='modal'>[+ Add New]</a>  -->
+                                         </select> 
                                  	</div></td></tr>
                                  	</table>
                                  	
@@ -225,7 +238,25 @@
                                  	  
                                  	  <div class="col-lg-8 col-sm-8 col-xs-12" style="padding-left: 36px;">
                                  	 	<label style="padding-top: 24px;">Reference Meetings</label><br/>
-                                 	 	<div class="ref-meetings"><i>No Ref. meetings</i></div>
+                                 	 	<div class="ref-meetings">
+                                 	 		<c:choose>
+                                   				<c:when test="${fn:length(finalRefmeetList) lt 1}">
+		                                 	 		<i>No Reference meetings</i>
+                                      			</c:when>
+	                                      		<c:otherwise>
+	                                 	 			<c:forEach items="${finalRefmeetList}" var="finalrefmeetlist">
+		                                     		<c:forEach items="${refermeetings}" var="refmeetlist">
+		                                   				<c:set var="comp_meetid" value="${refmeetlist.meetingid}"></c:set>
+		                                   				<c:choose>
+		                                   				<c:when test="${comp_meetid eq finalrefmeetlist}">
+		                                   					<i><a style="text-decoration: none;" href="getMeetingDetail?meetid=${refmeetlist.meetingid}"><span>MEET${refmeetlist.meetingid} &nbsp;&nbsp;&nbsp;${refmeetlist.subject} </span></a><br></i>
+		                                   				</c:when>
+		                                     			</c:choose>
+		                                     		</c:forEach>	
+		                                     		</c:forEach>
+                                 	 			</c:otherwise>
+                                 	 		</c:choose>
+                                 	 	</div>
                                  	 </div>
                                  	  <div class="col-lg-4 col-sm-4 col-xs-12">
                                  	  </div>
@@ -270,6 +301,19 @@
 	                            				<form role="form" method="post" action="saveMeeting">
 	                            				<div class="modal-body">
 	                            		
+	                            					<div class="row">
+		                                       			 <div class="col-lg-12">
+		                                       			 	 <div class="form-group">
+			                                                	<label>Task Type</label>
+			                                                   <select class="form-control" name="tasktype">
+				                                                    	<option value="Task">Task</option>
+				                                                        <option value="Information"><span><i class="fa fa-info-circle"></i> Information</span></option>
+				                                                        <option value="Discussion">Discussion</option>
+				                                                        <option value="Decision">Decision</option>
+				                                                </select>
+			                                                </div>
+		                                            	 </div>
+	                                               </div>
 	                                        		<div class="row">
 		                                       			 <div class="col-lg-12">
 		                                       			 	 <div class="form-group">

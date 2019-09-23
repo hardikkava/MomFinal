@@ -8,6 +8,7 @@ import javax.servlet.http.HttpSession;
 
 import org.apache.tomcat.util.codec.binary.Base64;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -35,6 +36,9 @@ public class MeetingvsTask {
 	@Value("${getAllUsers}")
 	String getAllUsers;
 	
+	@Value("${getAllUserMeeting}")
+    String getAllUserMeeting;
+	
 	public static HttpHeaders getAuthHeader()
 	{
 		String plainCreds = "avengers:pksh@28012528"; 
@@ -49,6 +53,25 @@ public class MeetingvsTask {
 		return headers;
 	}
 	
+	private ResponseEntity<List> getAllUserMeetings(String eid)
+    {
+        //ModelAndView mv=new ModelAndView();
+        List<Meeting> meetingList=null;
+        ResponseEntity<List> result=null;
+        try 
+        {
+            RestTemplate restTemplate =new RestTemplate();
+            HttpEntity entity=new HttpEntity(getAuthHeader());
+            result= restTemplate.exchange(getAllUserMeeting+eid, HttpMethod.GET,entity,List.class);
+        }
+        catch (Exception e) 
+        {
+            // TODO: handle exception
+        }
+        
+        return result;
+    }
+	
 	@RequestMapping(value = "/getMeetingDetail")
 	public ModelAndView getMeetingDetail(HttpSession session, @RequestParam(value="meetid") String meetid) 
 	{
@@ -57,7 +80,6 @@ public class MeetingvsTask {
 			mv.setViewName("login");
 			return mv; 
 		}else {
-			
 			RestTemplate restTemplate = new RestTemplate();
 			try
 			{
@@ -71,21 +93,22 @@ public class MeetingvsTask {
 				
 				ResponseEntity<Meeting> result = restTemplate.exchange(displayEditMeeting + meetid, HttpMethod.GET, entity, Meeting.class);
 				Meeting meeting = result.getBody();
-			
 				tempselectuserList = meeting.getParticipants().split(",");
 				
-				/*for(int i=0;i<tempselectuserList.length;i++) {
-					
-						System.out.println(userList.get(0).getEmail());
-				}*/
-					
-				System.out.println(meeting.getStartdate()+"__"+meeting.getEnddate());
+				String email = session.getAttribute("email").toString();
+				ResponseEntity<List> resultmeet= getAllUserMeetings(email);
+				List<Meeting> refmeetList = resultmeet.getBody();
+				String[] finalRefmeetList = meeting.getReferancemeeting().split(",");
+				
+				System.out.println(meeting.getStartdate()+"__"+meeting.getEnddate()+"____"+finalRefmeetList.length);
 				
 				mv.addObject("meeting", meeting);
+				mv.addObject("refermeetings",refmeetList);
+				mv.addObject("finalRefmeetList",finalRefmeetList);
 				mv.addObject("participants",userList);
 				mv.addObject("tempselectuserList",tempselectuserList);
+				mv.addObject("LoginName", session.getAttribute("firstname")+" "+session.getAttribute("lastname"));
 				//mv.addObject("selectedparticipants",selectuserList);
-				
 			}
 			catch(Exception e)
 			{

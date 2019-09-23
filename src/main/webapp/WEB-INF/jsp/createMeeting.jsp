@@ -22,7 +22,7 @@
 	</head>
     <body>
 
-        <div id="wrapper">
+        <div id="wrapper" class="container">
 
             <%@include file="header.jsp" %>
 
@@ -173,24 +173,43 @@
                 
                    <script>
                     $(document).ready(function() {
-                    	 
+                    	var isStartDateInvalid = false;
+                    	var isEndDateInvalid = false;
+                    	
                     	$('#startdatepicker').datetimepicker({
                     		daysOfWeekDisabled:[0],
                     		format: 'DD/MMM/YYYY hh:mm A',
                     		minDate: moment()
-                    	});
-                    	
+						});           			
+                    		
                         $('#enddatepicker').datetimepicker({
                             useCurrent: false,
                             daysOfWeekDisabled:[0],
                             format: 'DD/MMM/YYYY hh:mm A',
                             minDate: moment()
                         });
+                        
                         $("#startdatepicker").on("dp.change", function (e) {
+                        	
+                        	isStartDateInvalid = false;
                             $('#enddatepicker').data("DateTimePicker").minDate(e.date);
+                            var weekday = e.date.format('d');
+                            if(weekday === '0'){
+                                $('#startdatepicker').val("");
+                                isStartDateInvalid = true;
+                            	alert("Kindly select different date, as selected date falls in weekend.");
+                            }
+                            
                         });
                         $("#enddatepicker").on("dp.change", function (e) {
+                        	isEndDateInvalid = false;
                             $('#startdatepicker').data("DateTimePicker").maxDate(e.date);
+                            var weekday = e.date.format('d');
+                            if(weekday === '0'){
+                                $('#enddatepicker').val("");
+                                isEndDateInvalid = true;
+                            	alert("Kindly select different date, as selected date falls in weekend.");
+                            }
                         });
 						
                 		
@@ -243,6 +262,12 @@
             				if(c>0)
             					alert("Choose only images with (.jpg, .jpeg, .gif, .png, .txt, .doc, .docx, .pdf, .xls, .xlsx, .ppt, .pptx) extension.");
 
+            				
+            				if(isStartDateInvalid || isEndDateInvalid){
+            					alert("Kindly select different date, as selected date falls in weekend.");
+            					return false;
+            				}
+            				
             			});
 
 
@@ -352,7 +377,7 @@
                 <!-- /.container-fluid -->
             </div>
             <!-- /#page-wrapper -->
-
+		
         </div>
         
         </div>
