@@ -5,6 +5,7 @@ import java.sql.Timestamp;
 public class MeetingVsTask {
 
 	private int taskid;
+	private String tasktype;
 	private int meetingid;
     private String responsible;
     private String assignee;
@@ -21,6 +22,12 @@ public class MeetingVsTask {
 	}
 	public void setTaskid(int taskid) {
 		this.taskid = taskid;
+	}
+	public String getTasktype() {
+		return tasktype;
+	}
+	public void setTasktype(String tasktype) {
+		this.tasktype = tasktype;
 	}
 	public int getMeetingid() {
 		return meetingid;
@@ -79,10 +86,12 @@ public class MeetingVsTask {
 	
 	@Override
 	public String toString() {
-		return "MeetingVsTask [taskid=" + taskid + ", meetingid=" + meetingid + ", responsible=" + responsible
-				+ ", assignee=" + assignee + ", duedate=" + duedate + ", subject=" + subject + ", description="
-				+ description + ", status=" + status + ", createddate=" + createddate + ", updateddate=" + updateddate
-				+ "]";
+		return "MeetingVsTask [taskid=" + taskid + ", tasktype=" + tasktype + ", meetingid=" + meetingid
+				+ ", responsible=" + responsible + ", assignee=" + assignee + ", duedate=" + duedate + ", subject="
+				+ subject + ", description=" + description + ", status=" + status + ", createddate=" + createddate
+				+ ", updateddate=" + updateddate + "]";
 	}
+	
+	
 
 }

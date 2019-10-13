@@ -1,7 +1,9 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8"
+ <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
+
+
 <!DOCTYPE html>
 <html lang="en">
     <head>
@@ -24,7 +26,9 @@
 	.tasklist table tbody tr:hover{
 		background-color: #eae6e6;
 	}
-	
+	.optionicons{
+	  font-family: 'Font Awesome\ 5 Brands' , 'arial'
+	}
 	
 	</style>	
 	</head>
@@ -66,7 +70,7 @@
                             				<div class="modal-body">
                             					
                             				   <div class="row" style="padding-left: 14px;padding-right: 16px; ">
-		                                        	<form role="form" method="post" action="saveMeeting">
+		                                        	<form role="form" method="post" action="updateMeeting">
 		                                        		<div class="row">
 			                                       			 <div class="col-lg-12">
 			                                       			 	 <div class="form-group">
@@ -79,18 +83,18 @@
 			                                            	 <div class="col-lg-6">
 			                                       			 	 <div class="form-group">
 				                                                	<label>StartDate</label>
-				                                                	<input type="text" class="form-control" placeholder="Enter Meeting Startdate..." value="${meeting.startdate}" required name="startdate" id='startdatepicker'>
+				                                                	<input type="text" disabled="disabled" class="form-control" placeholder="Enter Meeting Startdate..." value="${meeting.startdate}" required name="startdate" id='startdatepicker'>
 				                                                </div>
 			                                            	 </div>
 			                                            	 <div class="col-lg-6">
 			                                       			 	 <div class="form-group">
 				                                                	<label>EndDate</label>
-				                                                    <input type="text" class="form-control" placeholder="Enter Meeting Enddate..." required name="enddate" id='enddatepicker'>
+				                                                    <input type="text" class="form-control" placeholder="Enter Meeting Enddate..."  name="enddate" id='enddatepicker' value="${meeting.enddate}">
 				                                                </div>
 			                                            	 </div>
 		                                            	 </div>
 		                                            	 <div class="row">
-			                                            	 <div class="col-lg-6">
+			                                            	 <div class="col-lg-12">
 			                                       			 	 <div class="form-group">
 				                                                	<label>Category</label>
 				                                                	<input type="text" class="form-control" placeholder="Enter Meeting Category..." value="${meeting.category}" required name="cat">
@@ -131,11 +135,48 @@
 		                                            	 <div class="row">
 			                                            	 <div class="col-lg-12">
 			                                       			 	 <div class="form-group">
+				                                                	<label>Participants</label>
+				                                                	<select name="updatedparticipant[]" id="updateduserlst" class="select2-multi-updatedpart" multiple="multiple" required >
+                                     									<c:forEach items="${participants}" var="plist">
+                                     										<c:set var="found" value="0"></c:set>
+                                     										<c:forEach items="${tempselectuserList}" var="selectedlist">
+								                                     			<c:set var="comp_email" value="${plist.email}"></c:set>
+								                                   				<c:choose>
+								                                   				<c:when test="${comp_email eq selectedlist}">
+								                                   					<c:set var="found" value="1"></c:set>
+								                                   					<option selected="selected" value="${plist.email}">${plist.firstname} ${plist.lastname} (${plist.email})</option>
+								                                   				</c:when>
+								                                     		</c:choose>
+								                                     		</c:forEach>
+								                                     			<c:if test="${found eq 0}">
+								                                     				<option value="${plist.email}">${plist.firstname} ${plist.lastname} (${plist.email})</option>
+								                                     			</c:if>
+								                                     	</c:forEach>
+							                                         </select>
+				                                                </div>
+			                                            	 </div>
+		                                            	 </div>
+		                                            	 <div class="row">
+			                                            	 <div class="col-lg-12">
+			                                       			 	 <div class="form-group">
 				                                                	<label>Reference Meeting</label>
-				                                                	<select class="form-control" name="ref-meet">
-				                                                    	<option value="1">TEST</option>
-				                                                        <option value="2">Test</option>
-				                                                    </select>
+				                                               		 <select name="updatedrefermeeting[]" id="" class="select2-multi-updatedmeet" multiple="multiple" >	
+				                                                		<c:forEach items="${refermeetings}" var="reflist">
+				                                                			<c:set var="found" value="0"></c:set>
+				                                                			<c:forEach items="${finalRefmeetList}" var="finalrefmeetlist">
+			                                   									<c:set var="comp_meetid" value="${reflist.meetingid}"></c:set>
+								                                   				<c:choose>
+									                                   				<c:when test="${comp_meetid eq finalrefmeetlist}">
+									                                   					<c:set var="found" value="1"></c:set>
+									                                   					<option selected="selected" value="${reflist.meetingid}"> MEET${reflist.meetingid} [${reflist.subject}]</option>
+									                                   				</c:when>
+								                                     			</c:choose>
+							                                     			</c:forEach>
+							                                     			<c:if test="${found eq 0}">
+							                                     				<option value="${reflist.meetingid}"> MEET${reflist.meetingid} [${reflist.subject}]</option>
+							                                     			</c:if>
+							                                     		</c:forEach>
+									                                   </select>             	
 				                                                </div>
 			                                            	 </div>
 		                                            	 </div>
@@ -143,10 +184,11 @@
 			                                    </div>
 			                                    <!-- /.row (nested) -->
                                     
-                                    
+                                    			
                             				</div>
                             				<div class="modal-footer"> <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>       
-												<button type="submit" class="btn btn-primary" id="btnadd" name="btnadd"> Save </button>        
+												 <input type="hidden" name="meetingid" value="${meeting.meetingid}">
+												<button type="submit" class="btn btn-primary" id="btnsavemeet" name="btnupdatemeet"> Save </button>        
 												 </form>
 											</div> 
 											
@@ -180,7 +222,9 @@
                                  	<tr><td><b>CreatedDate&nbsp;&nbsp;&nbsp;</b></td><td>${fn:substring(meeting.createddate,0,16)}</td></tr>
                                  	<tr><td><b>Last Update&nbsp;&nbsp;&nbsp;</b></td><td>${fn:substring(meeting.updateddate,0,16)}</td></tr>
                                  	<tr><td><b>Participants&nbsp;&nbsp;&nbsp;</b></td>
-                                 	<td><div style="height: 12px;">
+                                 	<td></td></tr>
+                                 	</table>
+                                 	<div style="height: 12px;">
 <!--                                  		<div class="userlist"> -->
 <%--                                  			<c:forEach items="${tempselectuserList}" var="selectedlist">  --%>
 <%--                                      		<c:forEach items="${participants}" var="plist"> --%>
@@ -211,8 +255,7 @@
                                      		
                                      	</c:forEach>
                                          </select> 
-                                 	</div></td></tr>
-                                 	</table>
+                                 	</div>
                                  	
                                  </div>
                                  <!-- /.col-lg-4 (nested) -->
@@ -268,21 +311,37 @@
                                  	 		<table id="taskexample" class="table" style="width:100%" cellspacing="0" >
 												<thead class="thead-dark">
 												<tr>
+													<th></th>
 									                <th style="width: 100%;">Task Desc..</th>
+									                <th>Assignees</th>
 									                <th>Owner</th>
-									                <th>Assignee</th>
 									                <th>DueDate</th>
 									                <th>Actions</th>
 									            </tr>
 												</thead>
 												<tbody>
-												<tr>
-													<td>Gettnigs<br/><i>tst test yse .tsetse</i></td>
-													<td>KP</td>
-													<td>Kp</td>
-													<td>12-21-2019 03:34</td>
-													<td><i class="fa fa-edit"></i> &nbsp;&nbsp; <i class="fa fa-trash"></i></td>
-												</tr>
+												<c:forEach items="${meetVsTaskList}" var="mvtlist">
+ 													<tr> 
+														
+														<td>${mvtlist.tasktype}</td> 
+														<c:if test="${mvtlist.tasktype eq 'Task'}"> 
+															<td> 📝  </td>
+															</c:if> 
+															<c:if test="${mvtlist.tasktype eq 'Information'}"> 
+														<td> ℹ  </td> 
+													</c:if> 
+													<c:if test="${mvtlist.tasktype eq 'Discussion'}"> 
+														<td> &#128101; </td>
+													</c:if>
+													<c:if test="${mvtlist.tasktype eq 'Decision'}"> 
+														<td>  🎯   </td>
+													</c:if> 
+													<td> ${mvtlist.subject}</td>
+													<td> ${mvtlist.responsible}</td> 
+													<td> ${mvtlist.assignee}</td> 
+													<td> ${mvtlist.duedate}</td> 
+													</tr>  
+												</c:forEach>
 												</tbody>
 											</table>
                                  	 	</div>
@@ -298,18 +357,18 @@
 													<h4 class="modal-title" id="myModalLabel"> New Task </h4>
 	                            				</div>
 	                            				
-	                            				<form role="form" method="post" action="saveMeeting">
+	                            				<form role="form" method="post" action="addNewTask">
 	                            				<div class="modal-body">
 	                            		
 	                            					<div class="row">
 		                                       			 <div class="col-lg-12">
 		                                       			 	 <div class="form-group">
 			                                                	<label>Task Type</label>
-			                                                   <select class="form-control" name="tasktype">
-				                                                    	<option value="Task">Task</option>
-				                                                        <option value="Information"><span><i class="fa fa-info-circle"></i> Information</span></option>
-				                                                        <option value="Discussion">Discussion</option>
-				                                                        <option value="Decision">Decision</option>
+			                                                   <select class="form-control" name="tasktype" id="tasksel">
+			                                                    	<option value="Task"> 📝 Task</option>
+			                                                        <option value="Information">&nbsp;   ℹ    &nbsp; Information</option>
+			                                                        <option value="Discussion">&#128101;  Discussion</option>
+			                                                        <option value="Decision"> 🎯  Decision</option>
 				                                                </select>
 			                                                </div>
 		                                            	 </div>
@@ -317,41 +376,47 @@
 	                                        		<div class="row">
 		                                       			 <div class="col-lg-12">
 		                                       			 	 <div class="form-group">
-			                                                	<label>Task Subject</label>
-			                                                    <input type="text" class="form-control" placeholder="Enter Task Subject..." required name="tasksubject" >
+			                                                	<label>Subject</label>
+			                                                    <input type="text" class="form-control" placeholder="Enter Subject..." required name="tasksubject" >
 			                                                </div>
 		                                            	 </div>
 	                                               </div>
 	                                               <div class="row">
 		                                       			 <div class="col-lg-12">
 		                                       			 	 <div class="form-group">
-			                                                	<label>Task summary</label>
-			                                                   	<textarea  class="form-control" name="tasksumry" placeholder="Enter Task Summary..."></textarea>
+			                                                	<label>Summary</label>
+			                                                   	<textarea  class="form-control" name="tasksumry" placeholder="Enter Summary..."></textarea>
 			                                                </div>
 		                                            	 </div>
 	                                               </div>
-	                                               <div class="row">
-		                                       			 <div class="col-lg-6">
+	                                               <div class="row taskdiv" >
+		                                       			 <div class="col-lg-12">
 		                                       			 	 <div class="form-group">
-			                                                	<label>Assignee</label>
-			                                                    <select class="form-control" name="taskassignee">
-				                                                    	<option value="1">TEST@gmail.com</option>
-				                                                        <option value="2">kp@kp.com</option>
-				                                                </select>
+			                                                	<label>Task Assignee</label><br>
+							                                     <select name="assignperson[]"  class="select2-multi-addtaskassignee" multiple="multiple" required id="taskassignedperson" style="min-width: 100% !important;">
+			                                                		
+			                                                		<c:forEach items="${participants}" var="plist">
+							                                   			<option value="${plist.email}">${plist.firstname} ${plist.lastname} (${plist.email})</option>
+							                                     	</c:forEach>
+			                                                    </select>
+                                                    
 			                                                </div>
 		                                            	 </div>
-		                                            	 <div class="col-lg-6">
-		                                       			 	 <div class="form-group">
-			                                                	<label>DueDate</label>
-			                                                    <input type="text" class="form-control" placeholder="Enter Task Duedate..." required name="duedate" id='duedatepicker'>
-			                                                </div>
-		                                            	 </div>
+		                                            	 
 	                                               </div>
-	                            				
+	                                               <div class="row" >
+		                                               <div class="col-lg-12">
+			                                       			 	 <div class="form-group">
+				                                                	<label>DueDate</label>
+				                                                    <input type="text" class="form-control" placeholder="Enter Task Duedate..." required name="duedate" id='duedatepicker'>
+				                                                </div>
+			                                           </div>
+	                            					</div>
 	                            				
 	                            				</div>
+	                            				<input type="hidden" name="meetingid" value="${meeting.meetingid}"> 
 	                            				<div class="modal-footer"> <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>       
-													<button type="submit" class="btn btn-primary" id="btnadd" name="btnadd"> Add </button>   
+													<button type="submit" class="btn btn-primary" id="btnaddtask" name="btnaddtask"> Add </button>   
 													</form>     
 												</div> 
 												
@@ -375,6 +440,8 @@
                    <script>
                     $(document).ready(function() {
                     	
+                    	var dateString, dateTimeParts, timeParts, dateParts, date;
+                    	
                     	$("#taskexample").DataTable({
                     		"paging":   false,
                             "info":     false
@@ -389,34 +456,73 @@
                             	$("#recurringPeriodID").hide();
                             	
                       });
-                    	
+
+                    	dateString = $("#startdatepicker").val();
+                    	dateTimeParts = dateString.split(' ');
+                    	timeParts = dateTimeParts[1].split(':');
+                    	dateParts = dateTimeParts[0].split('-');
+                    	date = new Date(dateParts[0], parseInt(dateParts[1], 10) - 1, dateParts[2], timeParts[0], timeParts[1]);
+						
                     	$('#startdatepicker').datetimepicker({
                     		daysOfWeekDisabled:[0],
-                    		minDate: moment()
+                    		format: 'DD/MMM/YYYY hh:mm A',
+                    		date: new Date(date.getTime())
                     	});
+                    	
+                    	dateString = $("#enddatepicker").val();
+                        dateTimeParts = dateString.split(' ');
+                        timeParts = dateTimeParts[1].split(':');
+                        dateParts = dateTimeParts[0].split('-');
+                    	date = new Date(dateParts[0], parseInt(dateParts[1], 10) - 1, dateParts[2], timeParts[0], timeParts[1]);
                     	
                         $('#enddatepicker').datetimepicker({
                             useCurrent: false,
                             daysOfWeekDisabled:[0],
-                            minDate: moment()
+                            format: 'DD/MMM/YYYY hh:mm A',
+                            minDate: moment(),
+                            date: new Date(date.getTime())
                         });
                         
                         $('#duedatepicker').datetimepicker({
                     		daysOfWeekDisabled:[0],
+                    		format: 'DD/MMM/YYYY hh:mm A',
                     		minDate: moment()
                     	});
                         
-                        $("#startdatepicker").on("dp.change", function (e) {
-                            $('#enddatepicker').data("DateTimePicker").minDate(e.date);
-                        });
-                        $("#enddatepicker").on("dp.change", function (e) {
-                            $('#startdatepicker').data("DateTimePicker").maxDate(e.date);
-                        });
+//                         $("#startdatepicker").on("dp.change", function (e) {
+//                             $('#enddatepicker').data("DateTimePicker").minDate(e.date);
+//                         });
+//                         $("#enddatepicker").on("dp.change", function (e) {
+//                             $('#startdatepicker').data("DateTimePicker").maxDate(e.date);
+//                         });
 							
-                        $('.select2-multi').select2();	
-							
-							
-						});
+                        $('.select2-multi').select2();
+                        $('.select2-multi-updatedpart').select2();
+                        $('.select2-multi-updatedmeet').select2();
+                        $('.select2-multi-addtaskassignee').select2();
+                        
+                   	    $('#tasksel').on('change', function() {
+                   	    	if(this.value == 'Task')
+	                        	$(".taskdiv").show();
+	                        else
+	                        	$(".taskdiv").hide();
+                   	   });
+                   	    
+                   	 $("#taskassignedperson").on('change', function() {
+                   		 if($("#taskassignedperson").val() == '-1'){
+                   			alert("Select person to whom you want to assign task."); 
+                   		 }
+                   	 });
+                   	$("#btnaddtask").on('click', function() {
+                  		 if($("#taskassignedperson").val() == '-1'){
+                  			alert("Select person to whom you want to assign task."); 
+                  			return false;
+                  		 }
+                  	 });
+                   	
+                   	    
+                   	    
+                    });
 					</script>
                    
                 </div>

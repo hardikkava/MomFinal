@@ -793,48 +793,48 @@ public class MOMController
 		return mv;
 	}
 	
-	@RequestMapping("/updateMeeting")
-	public void updateMeeting(Meeting meeting) 
-	{
-		ModelAndView mv = new ModelAndView();
-		try
-		{
-			ArrayList<String> newAddList = new ArrayList<String>();
-			ArrayList<String> deleteList = new ArrayList<String>();
-			ArrayList<String> sameList = new ArrayList<String>();
-			
-			String oldString = strParticipants.replaceAll("\\s+","");
-			String newString = meeting.getParticipants().replaceAll("\\s+","");
-			
-			if(!oldString.equals(newString))
-			{
-				String[] oldParticipant = oldString.split(",");
-				String[] newParticipant = newString.split(",");
-				
-				for(int i = 0; i < newParticipant.length; i++) 
-				{
-				      if(!Arrays.asList(oldParticipant).contains(newParticipant[i]))
-				    	  newAddList.add(newParticipant[i]);
-				}
-				
-				for(int i = 0; i < oldParticipant.length; i++) 
-				{
-				      if(!Arrays.asList(newParticipant).contains(oldParticipant[i]))
-				    	  deleteList.add(oldParticipant[i]);
-				}
-			}
-			else
-			{
-				sameList.add(oldString);
-			}
-			
-			
-		}
-		catch(Exception e)
-		{
-			System.out.println("Exception during updateMeeting ::: ");
-		}
-	}
+//	@RequestMapping("/updateMeeting")
+//	public void updateMeeting(Meeting meeting) 
+//	{
+//		ModelAndView mv = new ModelAndView();
+//		try
+//		{
+//			ArrayList<String> newAddList = new ArrayList<String>();
+//			ArrayList<String> deleteList = new ArrayList<String>();
+//			ArrayList<String> sameList = new ArrayList<String>();
+//			
+//			String oldString = strParticipants.replaceAll("\\s+","");
+//			String newString = meeting.getParticipants().replaceAll("\\s+","");
+//			
+//			if(!oldString.equals(newString))
+//			{
+//				String[] oldParticipant = oldString.split(",");
+//				String[] newParticipant = newString.split(",");
+//				
+//				for(int i = 0; i < newParticipant.length; i++) 
+//				{
+//				      if(!Arrays.asList(oldParticipant).contains(newParticipant[i]))
+//				    	  newAddList.add(newParticipant[i]);
+//				}
+//				
+//				for(int i = 0; i < oldParticipant.length; i++) 
+//				{
+//				      if(!Arrays.asList(newParticipant).contains(oldParticipant[i]))
+//				    	  deleteList.add(oldParticipant[i]);
+//				}
+//			}
+//			else
+//			{
+//				sameList.add(oldString);
+//			}
+//			
+//			
+//		}
+//		catch(Exception e)
+//		{
+//			System.out.println("Exception during updateMeeting ::: ");
+//		}
+//	}
 	
 	
 }
