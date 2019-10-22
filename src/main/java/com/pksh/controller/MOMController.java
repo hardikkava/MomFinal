@@ -105,6 +105,9 @@ public class MOMController
     @Value("${getAllUsers}")
     String getAllUsers;
     
+    @Value("${updateMeetingV1}")
+    String updateMeetingV1;
+    
     String strParticipants = "";
 	
 	@RequestMapping("/")
@@ -407,11 +410,11 @@ public class MOMController
 			Date sdate = sdf.parse(fromdate);
 			
 			Timestamp startTs=new Timestamp(sdate.getTime());
-			meeting.setStartdate(startTs);
+			meeting.setStartdate(startTs.toString());
 			
 			Date edate = sdf.parse(todate);
 			Timestamp endTs=new Timestamp(edate.getTime());
-			meeting.setEnddate(endTs);
+			meeting.setEnddate(endTs.toString());
 			
 			System.out.println(startTs+""+endTs+"");
 			//System.out.println(meeting.getStartdate()+""+meeting.getEnddate());
@@ -834,6 +837,69 @@ public class MOMController
 //		{
 //			System.out.println("Exception during updateMeeting ::: ");
 //		}
+//	}
+	
+//	@RequestMapping("/updateMeeting")
+//	public ModelAndView updateMeeting(HttpSession session, HttpServletRequest req, Meeting meeting, @RequestParam("participant[]") String[] participants, @RequestParam(value = "refermeeting[]", required = false) String[] refmeetings, @RequestParam(value = "todate") String todate) 
+//	{
+//		ModelAndView mv = new ModelAndView();
+//		
+//		try
+//		{
+//			SimpleDateFormat sdf = new SimpleDateFormat("dd/MMM/yyyy hh:mm a");
+//			Date edate = sdf.parse(todate);
+//			Timestamp endTs=new Timestamp(edate.getTime());
+//			meeting.setEnddate(endTs.toString());
+//			
+//			System.out.println(endTs+"");
+//			//System.out.println(meeting.getStartdate()+""+meeting.getEnddate());
+//			
+//			meeting.setParticipants(Arrays.toString(participants).replace("[", "").replaceAll("]", "").trim().replaceAll(" +", ""));
+//			meeting.setOwner(session.getAttribute("email").toString()!=null ? session.getAttribute("email").toString() : "-");			
+//			
+//			if(refmeetings != null && refmeetings.length > 0)
+//				meeting.setReferancemeeting(Arrays.toString(refmeetings).replace("[", "").replaceAll("]", "").trim().replaceAll(" +", ""));
+//			
+//			
+//			RestTemplate restTemplate = new RestTemplate();
+//			
+//			HttpEntity<Meeting> entity = new HttpEntity<>(meeting, getAuthHeader());
+//			
+//			ResponseEntity<Boolean> result = restTemplate.exchange(createMeeting, HttpMethod.POST, entity, Boolean.class);
+//			
+//			if(result.getStatusCodeValue() == 200)
+//			{
+//				//	calenderInvite(req, meeting.getSubject(), fromdate, todate);
+//				//	sendMail(req, meeting.getParticipants(), meeting.getSubject());
+//				
+//				List<Meeting> meetingList=null;
+//				try {
+//						String email = session.getAttribute("email").toString();
+//						ResponseEntity<List> resultmeet= getAllUserMeetings(email);
+//						meetingList=resultmeet.getBody();
+//						if(meetingList.isEmpty() || meetingList==null) {
+//						}
+//					
+//					
+//				}catch (Exception e) {
+//					// TODO: handle exception
+//				}
+//				//System.out.println("Meeting List is : "+meetingList);
+//				mv.addObject("meetstatus","success");
+//				mv.addObject("meetingList",meetingList);
+//				mv.addObject("LoginName", session.getAttribute("firstname")+" "+session.getAttribute("lastname"));
+//				mv.setViewName("viewMeeting");
+//				
+//			}
+//		
+//		}
+//		catch(Exception e)
+//		{
+//			System.out.println("Exception during saveMeeting ::: " + e);
+//		}
+//		
+//		return mv;
+//		
 //	}
 	
 	

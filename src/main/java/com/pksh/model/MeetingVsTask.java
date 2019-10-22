@@ -1,7 +1,5 @@
 package com.pksh.model;
 
-import java.sql.Timestamp;
-
 public class MeetingVsTask {
 
 	private int taskid;
@@ -9,12 +7,13 @@ public class MeetingVsTask {
 	private int meetingid;
     private String responsible;
     private String assignee;
-    private Timestamp duedate;
+    private String duedate;
     private String subject;
     private String description;
     private int status;
-    private Timestamp createddate;
-    private Timestamp updateddate;
+    private String createddate;
+    private String updateddate;
+    private String updatedBy;
     
     
 	public int getTaskid() {
@@ -47,10 +46,10 @@ public class MeetingVsTask {
 	public void setAssignee(String assignee) {
 		this.assignee = assignee;
 	}
-	public Timestamp getDuedate() {
+	public String getDuedate() {
 		return duedate;
 	}
-	public void setDuedate(Timestamp duedate) {
+	public void setDuedate(String duedate) {
 		this.duedate = duedate;
 	}
 	public String getSubject() {
@@ -71,25 +70,32 @@ public class MeetingVsTask {
 	public void setStatus(int status) {
 		this.status = status;
 	}
-	public Timestamp getCreateddate() {
+	public String getCreateddate() {
 		return createddate;
 	}
-	public void setCreateddate(Timestamp createddate) {
+	public void setCreateddate(String createddate) {
 		this.createddate = createddate;
 	}
-	public Timestamp getUpdateddate() {
+	public String getUpdateddate() {
 		return updateddate;
 	}
-	public void setUpdateddate(Timestamp updateddate) {
+	public void setUpdateddate(String updateddate) {
 		this.updateddate = updateddate;
 	}
+	public String getUpdatedBy() {
+		return updatedBy;
+	}
+	public void setUpdatedBy(String updatedBy) {
+		this.updatedBy = updatedBy;
+	}
+	
 	
 	@Override
 	public String toString() {
 		return "MeetingVsTask [taskid=" + taskid + ", tasktype=" + tasktype + ", meetingid=" + meetingid
 				+ ", responsible=" + responsible + ", assignee=" + assignee + ", duedate=" + duedate + ", subject="
 				+ subject + ", description=" + description + ", status=" + status + ", createddate=" + createddate
-				+ ", updateddate=" + updateddate + "]";
+				+ ", updateddate=" + updateddate + ", updatedBy=" + updatedBy + "]";
 	}
 	
 	

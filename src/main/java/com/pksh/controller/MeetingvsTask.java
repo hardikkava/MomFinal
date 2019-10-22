@@ -40,8 +40,8 @@ public class MeetingvsTask {
 	@Value("${displayEditMeeting}")
 	String displayEditMeeting;
 	
-	@Value("${updateMeeting}")
-	String updateMeeting;
+	@Value("${updateMeetingV1}")
+	String updateMeetingV1;
 	
 	@Value("${getAllUsers}")
 	String getAllUsers;
@@ -58,6 +58,8 @@ public class MeetingvsTask {
 	@Value("${addNewTask}")
     String addNewTask;
 	
+	@Value("${updateTask}")
+    String updateTask;
 	
 	public static HttpHeaders getAuthHeader()
 	{
@@ -85,9 +87,7 @@ public class MeetingvsTask {
             result= restTemplate.exchange(getAllUserMeeting+eid, HttpMethod.GET,entity,List.class);
         }
         catch (Exception e) 
-        {
-            // TODO: handle exception
-        }
+        {  }
         
         return result;
     }
@@ -124,19 +124,18 @@ public class MeetingvsTask {
 				System.out.println(meeting.getStartdate()+"__"+meeting.getEnddate()+"____"+finalRefmeetList.length);
 				
 				// Task section
-//				ResponseEntity<List> meetVsTaskResult = getUserMeetVsTask(meetid);
-//				meetVsTaskList = meetVsTaskResult.getBody();
-				
-				System.out.println("list: "+refmeetList);
-				//System.out.println(meetVsTaskList);
-				
+				ResponseEntity<List> meetVsTaskResult = getUserMeetVsTask(meetid);
+				if(meetVsTaskResult != null && meetVsTaskResult.getStatusCode().toString().equals("200")){
+					meetVsTaskList = meetVsTaskResult.getBody();
+					System.out.println("meetVsTaskList: "+meetVsTaskList);
+				}
 				
 				mv.addObject("meeting", meeting);
 				mv.addObject("refermeetings",refmeetList);
 				mv.addObject("finalRefmeetList",finalRefmeetList);
 				mv.addObject("participants",userList);
 				mv.addObject("tempselectuserList",tempselectuserList);
-			//	mv.addObject("meetVsTaskList",meetVsTaskList);
+				mv.addObject("meetVsTaskList",meetVsTaskList);
 				mv.addObject("LoginName", session.getAttribute("firstname")+" "+session.getAttribute("lastname"));
 				//mv.addObject("selectedparticipants",selectuserList);
 			}
@@ -179,19 +178,25 @@ public class MeetingvsTask {
 	 }
 	   
 	@RequestMapping(value = "/updateMeeting")
-	public ModelAndView updateMeeting(HttpSession session, @RequestParam("meetingid") String meetingid, @RequestParam("subject") String subject, @RequestParam("cat") String cat, @RequestParam(value="notes", required = false) String notes, @RequestParam("updatedparticipant[]") String[] participants, @RequestParam(value = "updatedrefermeeting[]", required = false) String[] refmeetings, @RequestParam(value = "enddate", required = false) String enddate) throws ParseException
+	public ModelAndView updateMeeting(HttpSession session, @RequestParam("meetingid") String meetingid, @RequestParam("subject") String subject, @RequestParam("category") String cat, @RequestParam(value="note", required = false) String notes, @RequestParam("updatedparticipant[]") String[] participants, @RequestParam(value = "updatedrefermeeting[]", required = false) String[] refmeetings, @RequestParam(value = "startdate", required = false) String startdate, @RequestParam(value = "enddate", required = false) String enddate,  @RequestParam(value = "place", required = false) String place) throws ParseException
 	{
 		ModelAndView mv = new ModelAndView();
 		Meeting meeting = new Meeting();
+		System.out.println("StartDATEMeting: "+startdate+place);
+		
+		meeting.setStartdate(startdate.toString());
+		
 		if(enddate != null && !enddate.isEmpty()) {
 			SimpleDateFormat sdf = new SimpleDateFormat("dd/MMM/yyyy hh:mm a");
 			Date edate = sdf.parse(enddate);
 			Timestamp edateTs=new Timestamp(edate.getTime());
-			meeting.setEnddate(edateTs);
+			meeting.setEnddate(edateTs.toString());
 		}
+		meeting.setUpdateddate(new Timestamp(new Date().getTime()).toString());
 		meeting.setMeetingid(Integer.parseInt(meetingid));
 		meeting.setSubject(subject);
 		meeting.setCategory(cat);
+		meeting.setPlace(place);
 		if(notes != null && !notes.isEmpty())
 			meeting.setNote(notes);
 		
@@ -204,9 +209,12 @@ public class MeetingvsTask {
 		
 		RestTemplate restTemplate = new RestTemplate();
 		
+		System.out.println("Meeting update: "+meeting);
+		
 		HttpEntity<Meeting> entity = new HttpEntity<>(meeting, getAuthHeader());
 		
-		ResponseEntity<Boolean> result = restTemplate.exchange(updateMeeting+meeting.getMeetingid(), HttpMethod.PUT, entity, Boolean.class);
+		ResponseEntity<Meeting> result = restTemplate.exchange(updateMeetingV1+meeting.getMeetingid(), HttpMethod.PUT, entity, Meeting.class);
+		Meeting meetupdate = result.getBody();
 		
 		if(result.getStatusCodeValue() == 200)
 		{
@@ -217,23 +225,28 @@ public class MeetingvsTask {
 			
 			ResponseEntity<List> userresult= getAllUsers();
 			userList = userresult.getBody();
-			
-			ResponseEntity<Meeting> meetresult = restTemplate.exchange(displayEditMeeting + Integer.parseInt(meetingid), HttpMethod.GET, getmeet_entity, Meeting.class);
-			Meeting getmeeting = meetresult.getBody();
-			tempselectuserList = getmeeting.getParticipants().split(",");
+
+			tempselectuserList = meetupdate.getParticipants().split(",");
 			
 			String email = session.getAttribute("email").toString();
 			ResponseEntity<List> resultmeet= getAllUserMeetings(email);
 			List<Meeting> refmeetList = resultmeet.getBody();
-			String[] finalRefmeetList = meeting.getReferancemeeting().split(",");
+			String[] finalRefmeetList = meetupdate.getReferancemeeting().split(",");
 			
-			System.out.println(meeting.getStartdate()+"__"+meeting.getEnddate()+"____"+finalRefmeetList.length);
+			System.out.println(meetupdate.getStartdate()+"__"+meetupdate.getEnddate()+"____"+finalRefmeetList.length);
+			System.out.println("Meeting after update: "+meeting);
 			
-			mv.addObject("meeting", meeting);
+			// Task section
+			List<MeetingVsTask> meetVsTaskList = null;
+			ResponseEntity<List> meetVsTaskResult = getUserMeetVsTask(meetingid);
+			meetVsTaskList = meetVsTaskResult.getBody();
+			
+			mv.addObject("meeting", meetupdate);
 			mv.addObject("refermeetings",refmeetList);
 			mv.addObject("finalRefmeetList",finalRefmeetList);
 			mv.addObject("participants",userList);
 			mv.addObject("tempselectuserList",tempselectuserList);
+			mv.addObject("meetVsTaskList",meetVsTaskList);
 			mv.addObject("LoginName", session.getAttribute("firstname")+" "+session.getAttribute("lastname"));
 			
 		}
@@ -244,38 +257,141 @@ public class MeetingvsTask {
 	
 	
 	@RequestMapping(value = "/addNewTask")
-	public ModelAndView addNewTask(HttpSession session, @RequestParam(value = "tasktype") String tasktype, @RequestParam(value = "tasksubject") String tasksubject, @RequestParam(value = "tasksumry") String tasksumry, @RequestParam(value = "assignperson[]") String[] assignperson, @RequestParam(value = "duedate") String duedate, @RequestParam(value = "meetingid") String meetingid) throws ParseException 
+	public ModelAndView addNewTask(HttpSession session, @RequestParam(value = "tasktype") String tasktype, @RequestParam(value = "tasksubject") String tasksubject, @RequestParam(value = "tasksumry", required = false) String tasksumry, @RequestParam(value = "assignperson[]", required = false) String[] assignperson, @RequestParam(value = "duedate") String duedate, @RequestParam(value = "meetingid") String meetingid) throws ParseException 
 	{
 		MeetingVsTask meetingVsTask = new MeetingVsTask();
 		ModelAndView mv = new ModelAndView();
+		HttpEntity entity = new HttpEntity(getAuthHeader());
+		RestTemplate restTemplate = new RestTemplate();
+		
 		SimpleDateFormat sdf = new SimpleDateFormat("dd/MMM/yyyy hh:mm a");
 		Date ddate = sdf.parse(duedate);
 		Timestamp ddate_timestamp=new Timestamp(ddate.getTime());
 		String email = session.getAttribute("email").toString();
 		
 		meetingVsTask.setMeetingid(Integer.parseInt(meetingid));
+		meetingVsTask.setTasktype(tasktype);
 		meetingVsTask.setSubject(tasksubject);
 		meetingVsTask.setDescription(tasksumry);
-		meetingVsTask.setResponsible(Arrays.toString(assignperson).replace("[", "").replaceAll("]", "").trim().replaceAll(" +", ""));
+		if(assignperson != null && assignperson.length > 0)
+			meetingVsTask.setResponsible(Arrays.toString(assignperson).replace("[", "").replaceAll("]", "").trim().replaceAll(" +", ""));
+		else
+			meetingVsTask.setResponsible(email);
+		
 		meetingVsTask.setAssignee(email);
-		meetingVsTask.setDuedate(ddate_timestamp);
+		meetingVsTask.setDuedate(ddate_timestamp.toString());
+		meetingVsTask.setUpdatedBy(email);
 		
+		HttpEntity<MeetingVsTask> postentity = new HttpEntity<>(meetingVsTask, getAuthHeader());
+		restTemplate.exchange(addNewTask, HttpMethod.POST, postentity, Void.class);
 		
-//		mv.addObject("meeting", meeting);
-//		mv.addObject("refermeetings",refmeetList);
-//		mv.addObject("finalRefmeetList",finalRefmeetList);
-//		mv.addObject("participants",userList);
-//		mv.addObject("tempselectuserList",tempselectuserList);
-//		mv.addObject("LoginName", session.getAttribute("firstname")+" "+session.getAttribute("lastname"));
-//		
-//	
-//		mv.setViewName("mettingDetail");
-//		return mv;
-//	
-	   return null;
+
+		List<User> selectuserList= null;
+		List<User> userList = null;
+		List<MeetingVsTask> meetVsTaskList = null;
+		String[] tempselectuserList=null;
+		
+		ResponseEntity<List> userresult= getAllUsers();
+		userList = userresult.getBody();
+		
+		ResponseEntity<Meeting> result = restTemplate.exchange(displayEditMeeting + meetingid, HttpMethod.GET, entity, Meeting.class);
+		Meeting meeting = result.getBody();
+		tempselectuserList = meeting.getParticipants().split(",");
+		
+		ResponseEntity<List> resultmeet= getAllUserMeetings(email);
+		List<Meeting> refmeetList = resultmeet.getBody();
+		String[] finalRefmeetList = meeting.getReferancemeeting().split(",");
+		
+		System.out.println(meeting.getStartdate()+"__"+meeting.getEnddate()+"____"+finalRefmeetList.length);
+		
+		// Task section
+		ResponseEntity<List> meetVsTaskResult = getUserMeetVsTask(meetingid);
+		meetVsTaskList = meetVsTaskResult.getBody();
+
+		
+		mv.addObject("meeting", meeting);
+		mv.addObject("refermeetings",refmeetList);
+		mv.addObject("finalRefmeetList",finalRefmeetList);
+		mv.addObject("participants",userList);
+		mv.addObject("tempselectuserList",tempselectuserList);
+		mv.addObject("meetVsTaskList",meetVsTaskList);
+		mv.addObject("LoginName", session.getAttribute("firstname")+" "+session.getAttribute("lastname"));
+
+		mv.setViewName("mettingDetail");
+		return mv;
+	
+	   //return null;
 	} 
 	   
-	   
+	
+	@RequestMapping(value = "/updateTask")
+	public ModelAndView updateTask(HttpSession session, @RequestParam(value = "taskid") String taskid, @RequestParam(value = "tasktype") String tasktype, @RequestParam(value = "tasksubject") String tasksubject, @RequestParam(value = "tasksumry", required = false) String tasksumry, @RequestParam(value = "assignperson[]", required = false) String[] assignperson, @RequestParam(value = "duedate") String duedate, @RequestParam(value = "meetingid") String meetingid) throws ParseException 
+	{
+		MeetingVsTask meetingVsTask = new MeetingVsTask();
+		ModelAndView mv = new ModelAndView();
+		HttpEntity entity = new HttpEntity(getAuthHeader());
+		RestTemplate restTemplate = new RestTemplate();
+		
+		SimpleDateFormat sdf = new SimpleDateFormat("dd/MMM/yyyy hh:mm a");
+		Date ddate = sdf.parse(duedate);
+		Timestamp ddate_timestamp=new Timestamp(ddate.getTime());
+		String email = session.getAttribute("email").toString();
+		
+		meetingVsTask.setMeetingid(Integer.parseInt(meetingid));
+		meetingVsTask.setTasktype(tasktype);
+		meetingVsTask.setSubject(tasksubject);
+		meetingVsTask.setDescription(tasksumry);
+			
+		if(tasktype.equals("Task") && assignperson != null && assignperson.length > 0)
+			meetingVsTask.setResponsible(Arrays.toString(assignperson).replace("[", "").replaceAll("]", "").trim().replaceAll(" +", ""));
+		else
+			meetingVsTask.setResponsible(email);
+		
+		meetingVsTask.setAssignee(email);
+		meetingVsTask.setDuedate(ddate_timestamp.toString());
+		meetingVsTask.setUpdatedBy(email);
+		
+		System.out.println("Update MeetingVsTask: "+meetingVsTask);
+		HttpEntity<MeetingVsTask> postentity = new HttpEntity<>(meetingVsTask, getAuthHeader());
+		restTemplate.exchange(updateTask+taskid, HttpMethod.PUT, postentity, MeetingVsTask.class);
+		
+
+		List<User> selectuserList= null;
+		List<User> userList = null;
+		List<MeetingVsTask> meetVsTaskList = null;
+		String[] tempselectuserList=null;
+		
+		ResponseEntity<List> userresult= getAllUsers();
+		userList = userresult.getBody();
+		
+		ResponseEntity<Meeting> result = restTemplate.exchange(displayEditMeeting + meetingid, HttpMethod.GET, entity, Meeting.class);
+		Meeting meeting = result.getBody();
+		tempselectuserList = meeting.getParticipants().split(",");
+		
+		ResponseEntity<List> resultmeet= getAllUserMeetings(email);
+		List<Meeting> refmeetList = resultmeet.getBody();
+		String[] finalRefmeetList = meeting.getReferancemeeting().split(",");
+		
+		System.out.println(meeting.getStartdate()+"__"+meeting.getEnddate()+"____"+finalRefmeetList.length);
+		
+		// Task section
+		ResponseEntity<List> meetVsTaskResult = getUserMeetVsTask(meetingid);
+		meetVsTaskList = meetVsTaskResult.getBody();
+
+		
+		mv.addObject("meeting", meeting);
+		mv.addObject("refermeetings",refmeetList);
+		mv.addObject("finalRefmeetList",finalRefmeetList);
+		mv.addObject("participants",userList);
+		mv.addObject("tempselectuserList",tempselectuserList);
+		mv.addObject("meetVsTaskList",meetVsTaskList);
+		mv.addObject("LoginName", session.getAttribute("firstname")+" "+session.getAttribute("lastname"));
+
+		mv.setViewName("mettingDetail");
+		return mv;
+	
+	   //return null;
+	}
 	   
 	   
 	   

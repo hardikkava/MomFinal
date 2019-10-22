@@ -23,6 +23,9 @@
 	.edmet:hover{
 		 cursor:pointer;
 	}
+	.edtask:hover{
+		cursor:pointer;
+	}
 	.tasklist table tbody tr:hover{
 		background-color: #eae6e6;
 	}
@@ -83,7 +86,9 @@
 			                                            	 <div class="col-lg-6">
 			                                       			 	 <div class="form-group">
 				                                                	<label>StartDate</label>
-				                                                	<input type="text" disabled="disabled" class="form-control" placeholder="Enter Meeting Startdate..." value="${meeting.startdate}" required name="startdate" id='startdatepicker'>
+				                                                	<input type="text" disabled="disabled" class="form-control" placeholder="Enter Meeting Startdate..." value="${meeting.startdate}" required name="stdate" id='startdatepicker'>
+				                                                    <input type="hidden" value="${meeting.startdate}" name="startdate">	
+				                                                    <input type="hidden" value="${meeting.place}" name="place">
 				                                                </div>
 			                                            	 </div>
 			                                            	 <div class="col-lg-6">
@@ -97,7 +102,7 @@
 			                                            	 <div class="col-lg-12">
 			                                       			 	 <div class="form-group">
 				                                                	<label>Category</label>
-				                                                	<input type="text" class="form-control" placeholder="Enter Meeting Category..." value="${meeting.category}" required name="cat">
+				                                                	<input type="text" class="form-control" placeholder="Enter Meeting Category..." value="${meeting.category}" required name="category">
 				                                                </div>
 			                                            	 </div>
 			                                            </div>
@@ -128,7 +133,7 @@
 			                                            	 <div class="col-lg-12">
 			                                       			 	 <div class="form-group">
 				                                                	<label>Notes</label>
-				                                                	<textarea  class="form-control" name="notes">${meeting.note}</textarea>
+				                                                	<textarea  class="form-control" name="note">${meeting.note}</textarea>
 				                                                </div>
 			                                            	 </div>
 		                                            	 </div>
@@ -221,42 +226,16 @@
                                  	<tr><td><b>Place&nbsp;&nbsp;&nbsp;</b></td><td>${meeting.place}</td></tr>
                                  	<tr><td><b>CreatedDate&nbsp;&nbsp;&nbsp;</b></td><td>${fn:substring(meeting.createddate,0,16)}</td></tr>
                                  	<tr><td><b>Last Update&nbsp;&nbsp;&nbsp;</b></td><td>${fn:substring(meeting.updateddate,0,16)}</td></tr>
+                                 	<tr><td></td><td></td></tr>
                                  	<tr><td><b>Participants&nbsp;&nbsp;&nbsp;</b></td>
-                                 	<td></td></tr>
-                                 	</table>
-                                 	<div style="height: 12px;">
-<!--                                  		<div class="userlist"> -->
-<%--                                  			<c:forEach items="${tempselectuserList}" var="selectedlist">  --%>
-<%--                                      		<c:forEach items="${participants}" var="plist"> --%>
-<%--                                    				<c:set var="comp_email" value="${plist.email}"></c:set> --%>
-<%--                                    				<c:choose> --%>
-<%--                                    				<c:when test="${comp_email eq selectedlist}"> --%>
-<%--                                    					<label>${plist.firstname} ${plist.lastname} (${plist.email})</label> --%>
-<%--                                    				</c:when> --%>
-                                   				
-<%--                                      		</c:choose> --%>
-<%--                                      		</c:forEach> --%>
-<%--                                      		</c:forEach> --%>
-<!--                                  		</div> -->
-                                 		<select name="participant[]" id="userlst" disabled="disabled" class="form-control select2-multi" multiple="multiple" required >
-                                     		
-                                     	<c:forEach items="${tempselectuserList}" var="selectedlist">
-                                     		<c:forEach items="${participants}" var="plist">
-                                   				<c:set var="comp_email" value="${plist.email}"></c:set>
-                                   				<c:choose>
-                                   				<c:when test="${comp_email eq selectedlist}">
-                                   					<option selected="selected" value="${plist.email}">${plist.firstname} ${plist.lastname} (${plist.email})</option>
-                                   				</c:when>
-                                   				<c:otherwise>
-                                   					<option value="${plist.email}">${plist.firstname} ${plist.lastname} (${plist.email})</option>
-                                     			</c:otherwise>
-                                     		</c:choose>
-                                     		</c:forEach>
-                                     		
-                                     	</c:forEach>
-                                         </select> 
-                                 	</div>
+                                 	<td>
+	                                 	<c:forEach items="${tempselectuserList}" var="selectedlist">
+											<span>${selectedlist}</span><br>
+										</c:forEach>
+                                 	</td></tr>	
                                  	
+                                 	
+                                 	</table>
                                  </div>
                                  <!-- /.col-lg-4 (nested) -->
                                  </div>
@@ -308,38 +287,129 @@
                                  	 	<label style="padding-top: 24px;">Tasks</label><br/>
                                  	 	
                                  	 	<div class="tasklist" style="border: dotted #CCC 1px;border-radius: 3px;margin-bottom: 12px;padding-top: 11px;padding-right: 11px;padding-left: 11px;">
-                                 	 		<table id="taskexample" class="table" style="width:100%" cellspacing="0" >
+                                 	 		<table id="taskexample" class="table" style="width:100%;table-layout:fixed;" cellspacing="0" >
 												<thead class="thead-dark">
 												<tr>
-													<th></th>
-									                <th style="width: 100%;">Task Desc..</th>
+													<th style="width: 1px;"></th>
+									                <th>Task Desc..</th>
 									                <th>Assignees</th>
 									                <th>Owner</th>
 									                <th>DueDate</th>
-									                <th>Actions</th>
+									                <th style="width: 1px;">Actions</th>
 									            </tr>
 												</thead>
 												<tbody>
 												<c:forEach items="${meetVsTaskList}" var="mvtlist">
  													<tr> 
-														
-														<td>${mvtlist.tasktype}</td> 
 														<c:if test="${mvtlist.tasktype eq 'Task'}"> 
-															<td> 📝  </td>
+															<td style="width: 1px;"> 📝  </td>
 															</c:if> 
 															<c:if test="${mvtlist.tasktype eq 'Information'}"> 
-														<td> ℹ  </td> 
+														<td style="width: 1px;"> ℹ  </td> 
 													</c:if> 
 													<c:if test="${mvtlist.tasktype eq 'Discussion'}"> 
-														<td> &#128101; </td>
+														<td style="width: 1px;"> &#128101; </td>
 													</c:if>
 													<c:if test="${mvtlist.tasktype eq 'Decision'}"> 
-														<td>  🎯   </td>
+														<td style="width: 1px;">  🎯   </td>
 													</c:if> 
 													<td> ${mvtlist.subject}</td>
-													<td> ${mvtlist.responsible}</td> 
-													<td> ${mvtlist.assignee}</td> 
-													<td> ${mvtlist.duedate}</td> 
+													<td style="word-wrap:break-word;"> ${mvtlist.responsible}</td> 
+													<td style="word-wrap:break-word;"> ${mvtlist.assignee}</td> 
+													<td style="word-wrap:break-word;"> ${mvtlist.duedate}</td> 
+													<td style="width: 1px;"> <i class="edtask fa fa-edit" data-target="#getupdatetask_taskid${mvtlist.taskid}" data-toggle="modal"></i></td>
+													
+													<!--  edit task modal -->
+													<div class="modal fade" id="getupdatetask_taskid${mvtlist.taskid}" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">  
+													  <div class="modal-dialog">      
+														<div class="modal-content">         
+															<div class="modal-header">
+																<button type="button" class="close" data-dismiss="modal"> &times;</button>            
+																<h4 class="modal-title" id="myModalLabel"> Update Task </h4>
+				                            				</div>
+				                            				
+				                            				<form role="form" method="post" action="updateTask">
+				                            				<div class="modal-body">
+				                            		
+				                            					<div class="row">
+					                                       			 <div class="col-lg-12">
+					                                       			 	 <div class="form-group">
+					                                       			 	 
+					                                       			 	 <input type="hidden" name="taskid" value="${mvtlist.taskid}">
+						                                                	<label>Task Type</label>
+						                                                   <select class="form-control" name="tasktype" id="taskselupdate">
+						                                                    	<option ${mvtlist.tasktype == 'Task' ? 'selected="selected"' : ''} value="Task"> 📝 Task</option>
+						                                                        <option ${mvtlist.tasktype == 'Information' ? 'selected="selected"' : ''} value="Information">&nbsp;   ℹ    &nbsp; Information</option>
+						                                                        <option ${mvtlist.tasktype == 'Discussion' ? 'selected="selected"' : ''} value="Discussion">&#128101;  Discussion</option>
+						                                                        <option ${mvtlist.tasktype == 'Decision' ? 'selected="selected"' : ''} value="Decision"> 🎯  Decision</option>
+							                                                </select>
+						                                                </div>
+					                                            	 </div>
+				                                               </div>
+				                                        		<div class="row">
+					                                       			 <div class="col-lg-12">
+					                                       			 	 <div class="form-group">
+						                                                	<label>Subject</label>
+						                                                    <input type="text" class="form-control" placeholder="Enter Subject..." required name="tasksubject" value="${mvtlist.subject}">
+						                                                </div>
+					                                            	 </div>
+				                                               </div>
+				                                               <div class="row">
+					                                       			 <div class="col-lg-12">
+					                                       			 	 <div class="form-group">
+						                                                	<label>Summary</label>
+						                                                   	<textarea  class="form-control" name="tasksumry" placeholder="Enter Summary...">${mvtlist.description}</textarea>
+						                                                </div>
+					                                            	 </div>
+				                                               </div>
+				                                               <div class="row taskdivupdate" >
+					                                       			 <div class="col-lg-12">
+					                                       			 	 <div class="form-group">
+						                                                	<label>Task Assignee</label><br>
+										                                     <select name="assignperson[]" disabled="disabled" class="select2-multi-addtaskassignee" multiple="multiple" required id="taskassignedpersonupdate" style="min-width: 100% !important;">
+						                                                    
+						                                                    <c:forEach items="${participants}" var="plist">
+                                     										<c:set var="found" value="0"></c:set>
+                                     										<c:forEach items="${mvtlist.responsible}" var="selectedlist">
+								                                     			<c:set var="comp_email" value="${plist.email}"></c:set>
+								                                   				<c:choose>
+								                                   				<c:when test="${comp_email eq selectedlist}">
+								                                   					<c:set var="found" value="1"></c:set>
+								                                   					<option selected="selected" value="${plist.email}">${plist.firstname} ${plist.lastname} (${plist.email})</option>
+								                                   				</c:when>
+								                                     		</c:choose>
+								                                     		</c:forEach>
+								                                     			<c:if test="${found eq 0}">
+								                                     				<option value="${plist.email}">${plist.firstname} ${plist.lastname} (${plist.email})</option>
+								                                     			</c:if>
+								                                     	</c:forEach>
+								                                     	
+								                                     	</select>
+			                                                    
+						                                                </div>
+					                                            	 </div>
+					                                            	 
+				                                               </div>
+				                                               <div class="row" >
+					                                               <div class="col-lg-12">
+						                                       			 	 <div class="form-group">
+							                                                	<label>DueDate</label>
+							                                                    <input type="text" class="form-control" placeholder="Enter Task Duedate..." required name="duedate" id='duedatepicker_update' value="${mvtlist.duedate}" >
+							                                                </div>
+						                                           </div>
+				                            					</div>
+				                            				
+				                            				</div>
+				                            				<input type="hidden" name="meetingid" value="${meeting.meetingid}"> 
+				                            				<div class="modal-footer"> <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>       
+																<button type="submit" class="btn btn-primary" id="btnupdatetask" name="btnupdate"> Save </button>   
+																</form>     
+															</div> 
+															
+				                            			</div>
+				                            		  </div>
+	                            					<!--  edit task modal ends -->	  
+													
 													</tr>  
 												</c:forEach>
 												</tbody>
@@ -457,7 +527,7 @@
                             	
                       });
 
-                    	dateString = $("#startdatepicker").val();
+                    	dateString = $("#startdatepicker").val(); 
                     	dateTimeParts = dateString.split(' ');
                     	timeParts = dateTimeParts[1].split(':');
                     	dateParts = dateTimeParts[0].split('-');
@@ -489,6 +559,21 @@
                     		minDate: moment()
                     	});
                         
+                        
+                        dateString = $("#duedatepicker_update").val();
+                        dateTimeParts = dateString.split(' ');
+                        timeParts = dateTimeParts[1].split(':');
+                        dateParts = dateTimeParts[0].split('-');
+                    	date = new Date(dateParts[0], parseInt(dateParts[1], 10) - 1, dateParts[2], timeParts[0], timeParts[1]);
+                    	
+                        $('#duedatepicker_update').datetimepicker({
+                            useCurrent: false,
+                            daysOfWeekDisabled:[0],
+                            format: 'DD/MMM/YYYY hh:mm A',
+                            minDate: moment(),
+                            date: new Date(date.getTime())
+                        });
+                        
 //                         $("#startdatepicker").on("dp.change", function (e) {
 //                             $('#enddatepicker').data("DateTimePicker").minDate(e.date);
 //                         });
@@ -496,29 +581,35 @@
 //                             $('#startdatepicker').data("DateTimePicker").maxDate(e.date);
 //                         });
 							
-                        $('.select2-multi').select2();
                         $('.select2-multi-updatedpart').select2();
                         $('.select2-multi-updatedmeet').select2();
                         $('.select2-multi-addtaskassignee').select2();
                         
+                       var taskassigneeselect = document.getElementById("taskassignedperson");
+                        
                    	    $('#tasksel').on('change', function() {
-                   	    	if(this.value == 'Task')
+                   	    	if(this.value == 'Task'){
+                   	    		taskassigneeselect.setAttribute('required','required');
 	                        	$(".taskdiv").show();
-	                        else
+                   	    	}else
+                   	    	{
+                   	    		taskassigneeselect.removeAttribute('required');
 	                        	$(".taskdiv").hide();
+                   	    	}
                    	   });
-                   	    
-                   	 $("#taskassignedperson").on('change', function() {
-                   		 if($("#taskassignedperson").val() == '-1'){
-                   			alert("Select person to whom you want to assign task."); 
-                   		 }
-                   	 });
-                   	$("#btnaddtask").on('click', function() {
-                  		 if($("#taskassignedperson").val() == '-1'){
-                  			alert("Select person to whom you want to assign task."); 
-                  			return false;
-                  		 }
-                  	 });
+ 						
+                   	 var taskassigneeselect_update = document.getElementById("taskassignedpersonupdate");
+                   	  $('#taskselupdate').on('change', function() {
+                	    	if(this.value == 'Task'){
+                	    		taskassigneeselect_update.setAttribute('required','required');
+                	    		taskassigneeselect_update.removeAttribute('disabled');
+	                        	$(".taskdivupdate").show();
+                	    	}else
+                	    	{
+                	    		taskassigneeselect_update.removeAttribute('required');
+	                        	$(".taskdivupdate").hide();
+                	    	}
+                	   });
                    	
                    	    
                    	    

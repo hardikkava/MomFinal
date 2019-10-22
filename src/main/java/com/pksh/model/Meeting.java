@@ -1,6 +1,5 @@
 package com.pksh.model;
 
-import java.sql.Timestamp;
 
 public class Meeting 
 {
@@ -19,10 +18,10 @@ public class Meeting
     private String custom1;
     private String custom2;
     private String custom3;
-    private Timestamp startdate;
-    private Timestamp enddate;
-    private Timestamp createddate;
-    private Timestamp updateddate;
+    private String startdate;
+    private String enddate;
+    private String createddate;
+    private String updateddate;
     private String updatedby;
     
 	public int getMeetingid() {
@@ -115,28 +114,28 @@ public class Meeting
 	public void setCustom3(String custom3) {
 		this.custom3 = custom3;
 	}
-	public Timestamp getStartdate() {
+	public String getStartdate() {
 		return startdate;
 	}
-	public void setStartdate(Timestamp startdate) {
+	public void setStartdate(String startdate) {
 		this.startdate = startdate;
 	}
-	public Timestamp getEnddate() {
+	public String getEnddate() {
 		return enddate;
 	}
-	public void setEnddate(Timestamp enddate) {
+	public void setEnddate(String enddate) {
 		this.enddate = enddate;
 	}
-	public Timestamp getCreateddate() {
+	public String getCreateddate() {
 		return createddate;
 	}
-	public void setCreateddate(Timestamp createddate) {
+	public void setCreateddate(String createddate) {
 		this.createddate = createddate;
 	}
-	public Timestamp getUpdateddate() {
+	public String getUpdateddate() {
 		return updateddate;
 	}
-	public void setUpdateddate(Timestamp updateddate) {
+	public void setUpdateddate(String updateddate) {
 		this.updateddate = updateddate;
 	}
 	public String getUpdatedby() {
