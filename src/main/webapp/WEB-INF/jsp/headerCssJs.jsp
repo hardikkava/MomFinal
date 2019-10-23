@@ -23,7 +23,7 @@
 <link href="<c:url value="/css/bootstrap-datetimepicker.css" />" rel="stylesheet">
 
 <link href="<c:url value="/css/select2.min.css" />" rel="stylesheet" >
-<link rel="stylesheet" href="https://www.jquery-az.com/javascript/alert/dist/sweetalert.css">
+<link href="<c:url value="/css/sweetalert.css" />" rel="stylesheet">
 
 <script src="js/jquery.min.js"></script>
 
@@ -34,6 +34,6 @@
 
 <script src="/js/select2.min.js" type="text/javascript"></script>
 
-<script src="https://www.jquery-az.com/javascript/alert/dist/sweetalert-dev.js"></script>
+<script src="/js/sweetalert-dev.js"></script>
 
 <script src="js/mom.js"></script>

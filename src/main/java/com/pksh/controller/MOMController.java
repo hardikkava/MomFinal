@@ -47,6 +47,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.pksh.model.Meeting;
+import com.pksh.model.MeetingVsTask;
 import com.pksh.model.Search;
 import com.pksh.model.User;
 
@@ -71,6 +72,18 @@ public class MOMController
 {
 	@Value("${LoginURL}")
 	String LoginURL;
+	
+	@Value("${getMeetingsDueCountByUser}")
+	String getMeetingsDueCountByUser;	
+	
+	@Value("${getTasksDueCountByUser}")
+	String getTasksDueCountByUser;
+	
+	@Value("${getMeetingsDueListByUser}")
+	String getMeetingsDueListByUser;
+	
+	@Value("${getTasksDueListByUser}")
+	String getTasksDueListByUser;
 	
 	@Value("${RegisterURL}")
 	String RegisterURL;
@@ -117,23 +130,23 @@ public class MOMController
 	}
 	
 	@RequestMapping(value = "/loginForm", method=RequestMethod.POST)
-	public @ResponseBody ModelAndView loginData(HttpServletRequest request,@RequestParam(name="email") String email,@RequestParam(name="password") String password) 
+	public @ResponseBody ModelAndView loginData(HttpServletRequest request,@RequestParam(name="email") String useremail,@RequestParam(name="password") String password) 
 	{
 		String msg = "";
 		String viewName = "";
 		ModelAndView mv = new ModelAndView();
 		Map<String, String>  map = new HashMap<String, String>();
-		map.put("email", email);
+		map.put("email", useremail);
 		map.put("password", password);
 		
 		try
 		{
-			RestTemplate restTemplate = new RestTemplate();
+			RestTemplate restTemplateuser = new RestTemplate();
 			
 			HttpEntity<Map<String, String>> entity = new HttpEntity<>(map, getAuthHeader());
 			
-			ResponseEntity<User> result = restTemplate.exchange(LoginURL, HttpMethod.POST, entity, User.class);
-			User user= result.getBody();
+			ResponseEntity<User> resultuser = restTemplateuser.exchange(LoginURL, HttpMethod.POST, entity, User.class);
+			User user= resultuser.getBody();
 			
 			HttpSession session = request.getSession();
 			if(user != null && user.getFirstname() != null && user.getLastname() != null)
@@ -143,13 +156,35 @@ public class MOMController
 				session.setAttribute("email", user.getEmail());
 			}
 
-			int userMeetingCount=getUserMeetingsCounts(email);
-            int userTaskCount=getUserMeetingsCounts(email);
-            int userCompletedTaskCount=getUserCompletedTaskCounts(email);
-            
-            mv.addObject("userMeetingCount",userMeetingCount);
-            mv.addObject("userTaskCount",userTaskCount);
-            mv.addObject("userCompletedTaskCount",userCompletedTaskCount);
+			String email = session.getAttribute("email").toString();
+			int meetingsDueCount=0;
+			int tasksDueCount=0;	
+			List<Meeting> meetingResult=null;
+        	List<MeetingVsTask> taskResult=null;
+	        try {
+	        	ResponseEntity<Integer> result;
+	        	ResponseEntity<List> meettaskresult;
+	            RestTemplate meettaskRestTemplate =new RestTemplate();
+	           
+	            RestTemplate restTemplate =new RestTemplate();
+	            result= restTemplate.exchange(getMeetingsDueCountByUser+email+"?date=test", HttpMethod.GET, entity, Integer.class);
+	            meetingsDueCount = result.getBody();
+	            result= restTemplate.exchange(getTasksDueCountByUser+email+"?date=test", HttpMethod.GET, entity, Integer.class);
+	            tasksDueCount = result.getBody();
+	            
+	            meettaskresult= meettaskRestTemplate.exchange(getMeetingsDueListByUser+email+"?date=test", HttpMethod.GET, entity, List.class);
+	            meetingResult = meettaskresult.getBody();
+	            meettaskresult= meettaskRestTemplate.exchange(getTasksDueListByUser+email+"?date=test", HttpMethod.GET, entity, List.class);
+	            taskResult = meettaskresult.getBody();
+	           
+	        }catch (Exception e) {
+	            // TODO: handle exception
+	        }
+	
+			mv.addObject("meetingsDueCount",meetingsDueCount);
+			mv.addObject("tasksDueCount",tasksDueCount);
+			mv.addObject("meetingResult",meetingResult);
+			mv.addObject("taskResult",taskResult);
 			mv.addObject("LoginName", session.getAttribute("firstname")+" "+session.getAttribute("lastname"));
 			
 			viewName = "home";
@@ -197,23 +232,36 @@ public class MOMController
 			return mv; 
 		}
 		else {
-			List<Meeting> meetingList=null;
-			try {
-				
-				String email = session.getAttribute("email").toString();
-					
-				ResponseEntity<List> result= getAllMeetings(email);
-				meetingList=result.getBody();
-				if(meetingList.isEmpty() || meetingList==null) {
-					
-				}
-				
-				
-			}catch (Exception e) {
-				// TODO: handle exception
-			}
-			//System.out.println("Meeting List is : "+meetingList);
-			mv.addObject("meetingList",meetingList);
+			String email = session.getAttribute("email").toString();
+			int meetingsDueCount=0;
+			int tasksDueCount=0;	
+			List<Meeting> meetingResult=null;
+        	List<MeetingVsTask> taskResult=null;
+	        try {
+	        	ResponseEntity<Integer> result;
+	        	ResponseEntity<List> meettaskresult;
+	            RestTemplate meettaskRestTemplate =new RestTemplate();
+	           
+	            RestTemplate restTemplate =new RestTemplate();
+	            HttpEntity entity=new HttpEntity(getAuthHeader());
+	            result= restTemplate.exchange(getMeetingsDueCountByUser+email+"?date=test", HttpMethod.GET, entity, Integer.class);
+	            meetingsDueCount = result.getBody();
+	            result= restTemplate.exchange(getTasksDueCountByUser+email+"?date=test", HttpMethod.GET, entity, Integer.class);
+	            tasksDueCount = result.getBody();
+	            
+	            meettaskresult= meettaskRestTemplate.exchange(getMeetingsDueListByUser+email+"?date=test", HttpMethod.GET, entity, List.class);
+	            meetingResult = meettaskresult.getBody();
+	            meettaskresult= meettaskRestTemplate.exchange(getTasksDueListByUser+email+"?date=test", HttpMethod.GET, entity, List.class);
+	            taskResult = meettaskresult.getBody();
+	           
+	        }catch (Exception e) {
+	            // TODO: handle exception
+	        }
+	
+			mv.addObject("meetingsDueCount",meetingsDueCount);
+			mv.addObject("tasksDueCount",tasksDueCount);
+			mv.addObject("meetingResult",meetingResult);
+			mv.addObject("taskResult",taskResult);
 			mv.addObject("LoginName", session.getAttribute("firstname")+" "+session.getAttribute("lastname"));
 			mv.setViewName("home");
 			return mv;

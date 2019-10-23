@@ -182,7 +182,6 @@ public class MeetingvsTask {
 	{
 		ModelAndView mv = new ModelAndView();
 		Meeting meeting = new Meeting();
-		System.out.println("StartDATEMeting: "+startdate+place);
 		
 		meeting.setStartdate(startdate.toString());
 		
@@ -208,8 +207,6 @@ public class MeetingvsTask {
 			meeting.setReferancemeeting(Arrays.toString(refmeetings).replace("[", "").replaceAll("]", "").trim().replaceAll(" +", ""));
 		
 		RestTemplate restTemplate = new RestTemplate();
-		
-		System.out.println("Meeting update: "+meeting);
 		
 		HttpEntity<Meeting> entity = new HttpEntity<>(meeting, getAuthHeader());
 		
