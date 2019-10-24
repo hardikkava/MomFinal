@@ -286,6 +286,8 @@
                                  	    <div class="col-lg-8 col-sm-8 col-xs-12" style="padding-left: 36px;">
                                  	 	<label style="padding-top: 24px;">Tasks</label><br/>
                                  	 	
+                                 	 	<input type="hidden" value="${taskAvailableFlag}" id="taskAvailableFlag">
+                                 	 
                                  	 	<div class="tasklist" style="border: dotted #CCC 1px;border-radius: 3px;margin-bottom: 12px;padding-top: 11px;padding-right: 11px;padding-left: 11px;">
                                  	 		<table id="taskexample" class="table" style="width:100%;table-layout:fixed;" cellspacing="0" >
 												<thead class="thead-dark">
@@ -559,20 +561,21 @@
                     		minDate: moment()
                     	});
                         
-                        
-                        dateString = $("#duedatepicker_update").val();
-                        dateTimeParts = dateString.split(' ');
-                        timeParts = dateTimeParts[1].split(':');
-                        dateParts = dateTimeParts[0].split('-');
-                    	date = new Date(dateParts[0], parseInt(dateParts[1], 10) - 1, dateParts[2], timeParts[0], timeParts[1]);
-                    	
-                        $('#duedatepicker_update').datetimepicker({
-                            useCurrent: false,
-                            daysOfWeekDisabled:[0],
-                            format: 'DD/MMM/YYYY hh:mm A',
-                            minDate: moment(),
-                            date: new Date(date.getTime())
-                        });
+                        if($("#taskAvailableFlag").val() == 'true'){
+	                        dateString = $("#duedatepicker_update").val();
+	                        dateTimeParts = dateString.split(' ');
+	                        timeParts = dateTimeParts[1].split(':');
+	                        dateParts = dateTimeParts[0].split('-');
+	                    	date = new Date(dateParts[0], parseInt(dateParts[1], 10) - 1, dateParts[2], timeParts[0], timeParts[1]);
+	                    	
+	                        $('#duedatepicker_update').datetimepicker({
+	                            useCurrent: false,
+	                            daysOfWeekDisabled:[0],
+	                            format: 'DD/MMM/YYYY hh:mm A',
+	                            minDate: moment(),
+	                            date: new Date(date.getTime())
+	                        });
+                        }
                         
 //                         $("#startdatepicker").on("dp.change", function (e) {
 //                             $('#enddatepicker').data("DateTimePicker").minDate(e.date);

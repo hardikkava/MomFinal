@@ -108,26 +108,33 @@ public class MeetingvsTask {
 				List<User> userList = null;
 				List<MeetingVsTask> meetVsTaskList = null;
 				String[] tempselectuserList=null;
-				
+				String[] finalRefmeetList=null;
+				boolean taskAvailableFlag=false;
 				ResponseEntity<List> userresult= getAllUsers();
 				userList = userresult.getBody();
 				
 				ResponseEntity<Meeting> result = restTemplate.exchange(displayEditMeeting + meetid, HttpMethod.GET, entity, Meeting.class);
 				Meeting meeting = result.getBody();
+				System.out.println("MeetingDetail: "+meeting);
+				
 				tempselectuserList = meeting.getParticipants().split(",");
 				
 				String email = session.getAttribute("email").toString();
 				ResponseEntity<List> resultmeet= getAllUserMeetings(email);
 				List<Meeting> refmeetList = resultmeet.getBody();
-				String[] finalRefmeetList = meeting.getReferancemeeting().split(",");
 				
-				System.out.println(meeting.getStartdate()+"__"+meeting.getEnddate()+"____"+finalRefmeetList.length);
+				if(meeting.getReferancemeeting() != null && !meeting.getReferancemeeting().isEmpty())
+					finalRefmeetList = meeting.getReferancemeeting().split(",");
+					
+				
+				System.out.println("Startdate & Enddate: "+meeting.getStartdate()+"__"+meeting.getEnddate()+"____");
 				
 				// Task section
 				ResponseEntity<List> meetVsTaskResult = getUserMeetVsTask(meetid);
 				if(meetVsTaskResult != null && meetVsTaskResult.getStatusCode().toString().equals("200")){
 					meetVsTaskList = meetVsTaskResult.getBody();
-					System.out.println("meetVsTaskList: "+meetVsTaskList);
+					taskAvailableFlag=true;
+					//System.out.println("meetVsTaskList: "+meetVsTaskList);
 				}
 				
 				mv.addObject("meeting", meeting);
@@ -136,6 +143,7 @@ public class MeetingvsTask {
 				mv.addObject("participants",userList);
 				mv.addObject("tempselectuserList",tempselectuserList);
 				mv.addObject("meetVsTaskList",meetVsTaskList);
+				mv.addObject("taskAvailableFlag",taskAvailableFlag);
 				mv.addObject("LoginName", session.getAttribute("firstname")+" "+session.getAttribute("lastname"));
 				//mv.addObject("selectedparticipants",selectuserList);
 			}
@@ -182,7 +190,7 @@ public class MeetingvsTask {
 	{
 		ModelAndView mv = new ModelAndView();
 		Meeting meeting = new Meeting();
-		
+		boolean taskAvailableFlag=false;
 		meeting.setStartdate(startdate.toString());
 		
 		if(enddate != null && !enddate.isEmpty()) {
@@ -219,6 +227,7 @@ public class MeetingvsTask {
 			List<User> selectuserList= null;
 			List<User> userList = null;
 			String[] tempselectuserList=null;
+			String[] finalRefmeetList=null;
 			
 			ResponseEntity<List> userresult= getAllUsers();
 			userList = userresult.getBody();
@@ -228,15 +237,21 @@ public class MeetingvsTask {
 			String email = session.getAttribute("email").toString();
 			ResponseEntity<List> resultmeet= getAllUserMeetings(email);
 			List<Meeting> refmeetList = resultmeet.getBody();
-			String[] finalRefmeetList = meetupdate.getReferancemeeting().split(",");
 			
-			System.out.println(meetupdate.getStartdate()+"__"+meetupdate.getEnddate()+"____"+finalRefmeetList.length);
-			System.out.println("Meeting after update: "+meeting);
+			if(meetupdate.getReferancemeeting() != null && !meetupdate.getReferancemeeting().isEmpty())
+				 finalRefmeetList = meetupdate.getReferancemeeting().split(",");
+			
+			System.out.println(meetupdate.getStartdate()+"__"+meetupdate.getEnddate()+"____");
+		//	System.out.println("Meeting after update: "+meeting);
 			
 			// Task section
 			List<MeetingVsTask> meetVsTaskList = null;
 			ResponseEntity<List> meetVsTaskResult = getUserMeetVsTask(meetingid);
-			meetVsTaskList = meetVsTaskResult.getBody();
+			if(meetVsTaskResult != null && meetVsTaskResult.getStatusCode().toString().equals("200")){
+				meetVsTaskList = meetVsTaskResult.getBody();
+				taskAvailableFlag=true;
+				//System.out.println("meetVsTaskList: "+meetVsTaskList);
+			}
 			
 			mv.addObject("meeting", meetupdate);
 			mv.addObject("refermeetings",refmeetList);
@@ -244,6 +259,7 @@ public class MeetingvsTask {
 			mv.addObject("participants",userList);
 			mv.addObject("tempselectuserList",tempselectuserList);
 			mv.addObject("meetVsTaskList",meetVsTaskList);
+			mv.addObject("taskAvailableFlag",taskAvailableFlag);
 			mv.addObject("LoginName", session.getAttribute("firstname")+" "+session.getAttribute("lastname"));
 			
 		}
@@ -260,7 +276,8 @@ public class MeetingvsTask {
 		ModelAndView mv = new ModelAndView();
 		HttpEntity entity = new HttpEntity(getAuthHeader());
 		RestTemplate restTemplate = new RestTemplate();
-		
+		String[] finalRefmeetList=null;
+		boolean taskAvailableFlag=true;
 		SimpleDateFormat sdf = new SimpleDateFormat("dd/MMM/yyyy hh:mm a");
 		Date ddate = sdf.parse(duedate);
 		Timestamp ddate_timestamp=new Timestamp(ddate.getTime());
@@ -297,13 +314,18 @@ public class MeetingvsTask {
 		
 		ResponseEntity<List> resultmeet= getAllUserMeetings(email);
 		List<Meeting> refmeetList = resultmeet.getBody();
-		String[] finalRefmeetList = meeting.getReferancemeeting().split(",");
+		if(meeting.getReferancemeeting() != null && !meeting.getReferancemeeting().isEmpty())
+			finalRefmeetList = meeting.getReferancemeeting().split(",");
 		
-		System.out.println(meeting.getStartdate()+"__"+meeting.getEnddate()+"____"+finalRefmeetList.length);
+		System.out.println(meeting.getStartdate()+"__"+meeting.getEnddate()+"____");
 		
 		// Task section
 		ResponseEntity<List> meetVsTaskResult = getUserMeetVsTask(meetingid);
-		meetVsTaskList = meetVsTaskResult.getBody();
+		if(meetVsTaskResult != null && meetVsTaskResult.getStatusCode().toString().equals("200")){
+			meetVsTaskList = meetVsTaskResult.getBody();
+			taskAvailableFlag=true;
+			//System.out.println("meetVsTaskList: "+meetVsTaskList);
+		}
 
 		
 		mv.addObject("meeting", meeting);
@@ -312,6 +334,7 @@ public class MeetingvsTask {
 		mv.addObject("participants",userList);
 		mv.addObject("tempselectuserList",tempselectuserList);
 		mv.addObject("meetVsTaskList",meetVsTaskList);
+		mv.addObject("taskAvailableFlag",taskAvailableFlag);
 		mv.addObject("LoginName", session.getAttribute("firstname")+" "+session.getAttribute("lastname"));
 
 		mv.setViewName("mettingDetail");
@@ -357,7 +380,8 @@ public class MeetingvsTask {
 		List<User> userList = null;
 		List<MeetingVsTask> meetVsTaskList = null;
 		String[] tempselectuserList=null;
-		
+		String[] finalRefmeetList=null;
+		boolean taskAvailableFlag=false;
 		ResponseEntity<List> userresult= getAllUsers();
 		userList = userresult.getBody();
 		
@@ -367,21 +391,27 @@ public class MeetingvsTask {
 		
 		ResponseEntity<List> resultmeet= getAllUserMeetings(email);
 		List<Meeting> refmeetList = resultmeet.getBody();
-		String[] finalRefmeetList = meeting.getReferancemeeting().split(",");
+
+		if(meeting.getReferancemeeting() != null && !meeting.getReferancemeeting().isEmpty())
+			 finalRefmeetList = meeting.getReferancemeeting().split(",");
 		
-		System.out.println(meeting.getStartdate()+"__"+meeting.getEnddate()+"____"+finalRefmeetList.length);
+		System.out.println(meeting.getStartdate()+"__"+meeting.getEnddate()+"____");
 		
 		// Task section
 		ResponseEntity<List> meetVsTaskResult = getUserMeetVsTask(meetingid);
-		meetVsTaskList = meetVsTaskResult.getBody();
+		if(meetVsTaskResult != null && meetVsTaskResult.getStatusCode().toString().equals("200")){
+			meetVsTaskList = meetVsTaskResult.getBody();
+			taskAvailableFlag=true;
+			//System.out.println("meetVsTaskList: "+meetVsTaskList);
+		}
 
-		
 		mv.addObject("meeting", meeting);
 		mv.addObject("refermeetings",refmeetList);
 		mv.addObject("finalRefmeetList",finalRefmeetList);
 		mv.addObject("participants",userList);
 		mv.addObject("tempselectuserList",tempselectuserList);
 		mv.addObject("meetVsTaskList",meetVsTaskList);
+		mv.addObject("taskAvailableFlag",taskAvailableFlag);
 		mv.addObject("LoginName", session.getAttribute("firstname")+" "+session.getAttribute("lastname"));
 
 		mv.setViewName("mettingDetail");
