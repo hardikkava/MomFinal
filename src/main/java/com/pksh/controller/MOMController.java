@@ -503,8 +503,8 @@ public class MOMController
 			
 			if(result.getStatusCodeValue() == 200)
 			{
-				//	calenderInvite(req, meeting.getSubject(), fromdate, todate);
-				//	sendMail(req, meeting.getParticipants(), meeting.getSubject());
+					calenderInvite(req, meeting.getSubject(), fromdate, todate);
+					sendMail(req, meeting.getParticipants(), meeting.getSubject());
 				
 				List<Meeting> meetingList=null;
 				try {
@@ -740,7 +740,7 @@ public class MOMController
 		try
 		{
 		   String[] path = req.getServletContext().getRealPath("/").split("webapp/");
-		   String realPath = path[0]+"resources/static/";
+		   String realPath = path[0]+"WEB-INF/classes/static/";
 		   String calFile = "mycalendar.ics";
 		   String[] toMail = toMailId.split(",");
 		   

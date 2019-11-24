@@ -25,15 +25,15 @@
 <link href="<c:url value="/css/select2.min.css" />" rel="stylesheet" >
 <link href="<c:url value="/css/sweetalert.css" />" rel="stylesheet">
 
-<script src="js/jquery.min.js"></script>
+<script src="<c:url value="js/jquery.min.js"/>" ></script>
 
-<script src="js/moment-with-locales.js"></script>
-<script src="js/bootstrap-datetimepicker.js"></script>
+<script src="<c:url value="js/moment-with-locales.js" />" ></script>
+<script src="<c:url value="js/bootstrap-datetimepicker.js"/>" ></script>
 
-<script src="js/jquery.autocomplete.min.js"></script>
+<script src="<c:url value="js/jquery.autocomplete.min.js"/>" ></script>
 
-<script src="/js/select2.min.js" type="text/javascript"></script>
+<script src="<c:url value="/js/select2.min.js" />" type="text/javascript"></script>
 
-<script src="/js/sweetalert-dev.js"></script>
+<script src="<c:url value="/js/sweetalert-dev.js" />"></script>
 
-<script src="js/mom.js"></script>
+<script src="<c:url value="js/mom.js" />"></script>
