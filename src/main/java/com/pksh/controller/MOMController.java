@@ -63,7 +63,11 @@ import net.fortuna.ical4j.model.component.VEvent;
 import net.fortuna.ical4j.model.component.VTimeZone;
 import net.fortuna.ical4j.model.parameter.TzId;
 import net.fortuna.ical4j.model.property.CalScale;
+import net.fortuna.ical4j.model.property.Description;
+import net.fortuna.ical4j.model.property.Location;
+import net.fortuna.ical4j.model.property.Organizer;
 import net.fortuna.ical4j.model.property.ProdId;
+import net.fortuna.ical4j.model.property.Summary;
 import net.fortuna.ical4j.model.property.Uid;
 import net.fortuna.ical4j.util.UidGenerator;
 
@@ -447,7 +451,7 @@ public class MOMController
 	}
 	
 	@RequestMapping("/saveMeeting")
-	public ModelAndView saveMeeting(HttpSession session, HttpServletRequest req, Meeting meeting, @RequestParam("participant[]") String[] participants, @RequestParam(value = "refermeeting[]", required = false) String[] refmeetings, @RequestParam("uploadfile") MultipartFile[] uploadfile, @RequestParam(value = "fromdate") String fromdate, @RequestParam(value = "todate") String todate) 
+	public ModelAndView saveMeeting(HttpSession session, HttpServletRequest req, Meeting meeting, @RequestParam("participant[]") String[] participants, @RequestParam(value = "refermeeting[]", required = false) String[] refmeetings, @RequestParam("uploadfile") MultipartFile[] uploadfile, @RequestParam(value = "fromdate") String fromdate, @RequestParam(value = "todate") String todate,@RequestParam(value = "place") String place,@RequestParam(value = "note") String note) 
 	{
 		ModelAndView mv = new ModelAndView();
 		
@@ -503,7 +507,10 @@ public class MOMController
 			
 			if(result.getStatusCodeValue() == 200)
 			{
-					calenderInvite(req, meeting.getSubject(), fromdate, todate);
+					//System.out.println("befor calenderInvite "+meeting.getSubject() +fromdate+todate);
+					//System.out.println("befor calenderInvite expected "+meeting.getSubject() +meeting.getStartdate()+meeting.getEnddate());
+					//calenderInvite(req, meeting.getSubject(), fromdate, todate);
+					calenderInvite(req, meeting.getSubject(), meeting.getStartdate(), meeting.getEnddate(),place,note,meeting.getOwner());
 					sendMail(req, meeting.getParticipants(), meeting.getSubject());
 				
 				List<Meeting> meetingList=null;
@@ -536,13 +543,14 @@ public class MOMController
 		
 	}
 	
-	public static void calenderInvite(HttpServletRequest req, String subject, String fromDate, String toDate)
+	public static void calenderInvite(HttpServletRequest req, String subject, String fromDate, String toDate,String place, String note,String owner)
 	{
-		  String[] stDate = fromDate.split("-|T|:");
-		  String[] eDate = toDate.split("-|T|:");
+		  String[] stDate = fromDate.split("-|T|:|T| ");
+		  String[] eDate = toDate.split("-|T|:|T| ");
 		
 		  String[] path = req.getServletContext().getRealPath("/").split("webapp/");
-		  String realPath = path[0]+"resources/static/";
+		 // String realPath = path[0]+"resources/static/";
+		  String realPath = path[0]+"WEB-INF/classes/static/";
 		  String calFile = "mycalendar.ics";
 		  
 		  try
@@ -551,7 +559,10 @@ public class MOMController
 			  TimeZoneRegistry registry = TimeZoneRegistryFactory.getInstance().createRegistry();
 			  TimeZone timezone = registry.getTimeZone("Asia/Kolkata");
 			  VTimeZone tz = timezone.getVTimeZone();
-			  
+			  for(int i=0;i<stDate.length;i++) {
+				  System.out.println("start data array :"+i+"--->"+stDate[i]); 
+			  }
+			  System.out.println("start data arra ::: ");
 			  java.util.Calendar startDate = new GregorianCalendar();
 			  startDate.setTimeZone(timezone);
 			  startDate.set(java.util.Calendar.MONTH, Integer.parseInt(stDate[1]) - 1);
@@ -559,7 +570,7 @@ public class MOMController
 			  startDate.set(java.util.Calendar.YEAR, Integer.parseInt(stDate[0]));
 			  startDate.set(java.util.Calendar.HOUR_OF_DAY, Integer.parseInt(stDate[3]));
 			  startDate.set(java.util.Calendar.MINUTE, Integer.parseInt(stDate[4]));
-			  startDate.set(java.util.Calendar.SECOND, 00);
+			  startDate.set(java.util.Calendar.SECOND, 00);	
 			  
 			  java.util.Calendar endDate = new GregorianCalendar();
 			  endDate.setTimeZone(timezone);
@@ -575,7 +586,9 @@ public class MOMController
 			  DateTime start = new DateTime(startDate.getTime());
 			  DateTime end = new DateTime(endDate.getTime());
 			  VEvent meeting = new VEvent(start, end, eventName);
-
+			  meeting.getProperties().add(new Location(place));
+			  meeting.getProperties().add(new Description(note));
+			  meeting.getProperties().add(new Organizer(owner));
 			  // add timezone info..
 			  meeting.getProperties().add(tz.getTimeZoneId());
 			  
@@ -601,7 +614,7 @@ public class MOMController
 			  
 			  //Saving an iCalendar file
 			  FileOutputStream fout = new FileOutputStream(realPath+calFile);
-		
+			  System.out.println("details---- "+icsCalendar);
 			  CalendarOutputter outputter = new CalendarOutputter();
 			  outputter.setValidating(false);
 			  outputter.output(icsCalendar, fout);
@@ -627,7 +640,7 @@ public class MOMController
 		  }
 		  catch(Exception e)
 		  {
-			  System.out.println("Exception ::: " + e);
+			  System.out.println("Exception ::: " + e.getMessage());
 		  }
 	}
 	
