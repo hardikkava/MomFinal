@@ -2,6 +2,7 @@ package com.pksh.controller;
 
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.net.URI;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -55,13 +56,20 @@ import net.fortuna.ical4j.data.CalendarBuilder;
 import net.fortuna.ical4j.data.CalendarOutputter;
 import net.fortuna.ical4j.model.Component;
 import net.fortuna.ical4j.model.DateTime;
+import net.fortuna.ical4j.model.Parameter;
 import net.fortuna.ical4j.model.Property;
 import net.fortuna.ical4j.model.TimeZone;
 import net.fortuna.ical4j.model.TimeZoneRegistry;
 import net.fortuna.ical4j.model.TimeZoneRegistryFactory;
 import net.fortuna.ical4j.model.component.VEvent;
 import net.fortuna.ical4j.model.component.VTimeZone;
+import net.fortuna.ical4j.model.parameter.Cn;
+import net.fortuna.ical4j.model.parameter.CuType;
+import net.fortuna.ical4j.model.parameter.PartStat;
+import net.fortuna.ical4j.model.parameter.Role;
+import net.fortuna.ical4j.model.parameter.Rsvp;
 import net.fortuna.ical4j.model.parameter.TzId;
+import net.fortuna.ical4j.model.property.Attendee;
 import net.fortuna.ical4j.model.property.CalScale;
 import net.fortuna.ical4j.model.property.Description;
 import net.fortuna.ical4j.model.property.Location;
@@ -510,7 +518,7 @@ public class MOMController
 					//System.out.println("befor calenderInvite "+meeting.getSubject() +fromdate+todate);
 					//System.out.println("befor calenderInvite expected "+meeting.getSubject() +meeting.getStartdate()+meeting.getEnddate());
 					//calenderInvite(req, meeting.getSubject(), fromdate, todate);
-					calenderInvite(req, meeting.getSubject(), meeting.getStartdate(), meeting.getEnddate(),place,note,meeting.getOwner());
+					calenderInvite(req, meeting.getSubject(), meeting.getStartdate(), meeting.getEnddate(),place,note,meeting);
 					sendMail(req, meeting.getParticipants(), meeting.getSubject());
 				
 				List<Meeting> meetingList=null;
@@ -542,12 +550,12 @@ public class MOMController
 		return mv;
 		
 	}
-	
-	public static void calenderInvite(HttpServletRequest req, String subject, String fromDate, String toDate,String place, String note,String owner)
+	//PP added String place, String note,String owner
+	public static void calenderInvite(HttpServletRequest req, String subject, String fromDate, String toDate,String place, String note,Meeting orgMeeting)
 	{
-		  String[] stDate = fromDate.split("-|T|:|T| ");
-		  String[] eDate = toDate.split("-|T|:|T| ");
-		
+		  String[] stDate = fromDate.split("-|T|:|T| ");  //by PP added "|T| "  -space
+		  String[] eDate = toDate.split("-|T|:|T| "); //by PP added "|T| "   -space
+		  String[] participate = orgMeeting.getParticipants().split(",");
 		  String[] path = req.getServletContext().getRealPath("/").split("webapp/");
 		 // String realPath = path[0]+"resources/static/";
 		  String realPath = path[0]+"WEB-INF/classes/static/";
@@ -586,9 +594,21 @@ public class MOMController
 			  DateTime start = new DateTime(startDate.getTime());
 			  DateTime end = new DateTime(endDate.getTime());
 			  VEvent meeting = new VEvent(start, end, eventName);
+			  
+			  //PP added below to add Location and Description and Organizer 
 			  meeting.getProperties().add(new Location(place));
 			  meeting.getProperties().add(new Description(note));
-			  meeting.getProperties().add(new Organizer(owner));
+			  meeting.getProperties().add(new Organizer(orgMeeting.getOwner()));
+			  
+			  for(int i=0;i<participate.length;i++) {
+				  Attendee dev1 = new Attendee(URI.create("mailto:"+participate[i]));
+				  dev1.getParameters().add(Role.REQ_PARTICIPANT);
+				  dev1.getParameters().add(Rsvp.TRUE);				  
+				  dev1.getParameters().add(PartStat.NEEDS_ACTION);
+				  dev1.getParameters().add(CuType.INDIVIDUAL);
+				  meeting.getProperties().add(dev1);
+				 
+			  }
 			  // add timezone info..
 			  meeting.getProperties().add(tz.getTimeZoneId());
 			  
@@ -614,6 +634,7 @@ public class MOMController
 			  
 			  //Saving an iCalendar file
 			  FileOutputStream fout = new FileOutputStream(realPath+calFile);
+			  System.out.println(orgMeeting.toString());
 			  System.out.println("details---- "+icsCalendar);
 			  CalendarOutputter outputter = new CalendarOutputter();
 			  outputter.setValidating(false);
