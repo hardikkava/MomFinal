@@ -518,6 +518,9 @@ public class MOMController
 					//System.out.println("befor calenderInvite "+meeting.getSubject() +fromdate+todate);
 					//System.out.println("befor calenderInvite expected "+meeting.getSubject() +meeting.getStartdate()+meeting.getEnddate());
 					//calenderInvite(req, meeting.getSubject(), fromdate, todate);
+//					System.out.println(MOMController.class.getResource("").getPath());
+//					System.out.println(req.getServletContext().getRealPath("/"));
+//					System.out.println(System.getProperty("user.URL"));
 					calenderInvite(req, meeting.getSubject(), meeting.getStartdate(), meeting.getEnddate(),place,note,meeting);
 					sendMail(req, meeting.getParticipants(), meeting.getSubject());
 				
@@ -560,7 +563,7 @@ public class MOMController
 		 // String realPath = path[0]+"resources/static/";
 		  String realPath = path[0]+"WEB-INF/classes/static/";
 		  String calFile = "mycalendar.ics";
-		  
+		  System.out.println("realPath:"+realPath);
 		  try
 		  {
 			// Create a TimeZone
