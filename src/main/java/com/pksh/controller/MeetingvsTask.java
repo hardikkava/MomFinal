@@ -1,5 +1,9 @@
 package com.pksh.controller;
 
+import java.io.File;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.sql.Timestamp;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -60,6 +64,12 @@ public class MeetingvsTask {
 	
 	@Value("${updateTask}")
     String updateTask;
+	
+	@Value("${docLocation}")
+	String docLocation;
+	
+	@Value("${docURL}")
+	String docURL;
 	
 	public static HttpHeaders getAuthHeader()
 	{
@@ -144,6 +154,7 @@ public class MeetingvsTask {
 				mv.addObject("tempselectuserList",tempselectuserList);
 				mv.addObject("meetVsTaskList",meetVsTaskList);
 				mv.addObject("taskAvailableFlag",taskAvailableFlag);
+				mv.addObject("docURL",docURL);
 				mv.addObject("LoginName", session.getAttribute("firstname")+" "+session.getAttribute("lastname"));
 				//mv.addObject("selectedparticipants",selectuserList);
 			}
@@ -186,12 +197,13 @@ public class MeetingvsTask {
 	 }
 	   
 	@RequestMapping(value = "/updateMeeting")
-	public ModelAndView updateMeeting(HttpSession session, @RequestParam("meetingid") String meetingid, @RequestParam("subject") String subject, @RequestParam("category") String cat, @RequestParam(value="note", required = false) String notes, @RequestParam("updatedparticipant[]") String[] participants, @RequestParam(value = "updatedrefermeeting[]", required = false) String[] refmeetings, @RequestParam(value = "startdate", required = false) String startdate, @RequestParam(value = "enddate", required = false) String enddate,  @RequestParam(value = "place", required = false) String place) throws ParseException
+	public ModelAndView updateMeeting(HttpSession session, @RequestParam("meetingid") String meetingid, @RequestParam("subject") String subject, @RequestParam("update_meet_attachment") String update_meet_attachment, @RequestParam("category") String cat, @RequestParam(value="note", required = false) String notes, @RequestParam("uploadfile") MultipartFile[] uploadfile, @RequestParam("updatedparticipant[]") String[] participants, @RequestParam(value = "updatedrefermeeting[]", required = false) String[] refmeetings, @RequestParam(value = "startdate", required = false) String startdate, @RequestParam(value = "enddate", required = false) String enddate,  @RequestParam(value = "place", required = false) String place) throws ParseException
 	{
 		ModelAndView mv = new ModelAndView();
 		Meeting meeting = new Meeting();
 		boolean taskAvailableFlag=false;
 		meeting.setStartdate(startdate.toString());
+		String filenames="";
 		
 		if(enddate != null && !enddate.isEmpty()) {
 			SimpleDateFormat sdf = new SimpleDateFormat("dd/MMM/yyyy hh:mm a");
@@ -199,6 +211,28 @@ public class MeetingvsTask {
 			Timestamp edateTs=new Timestamp(edate.getTime());
 			meeting.setEnddate(edateTs.toString());
 		}
+		
+		File f = new File(docLocation+"//"+session.getAttribute("email").toString().trim());
+		if(!f.exists())
+			f.mkdir();
+			
+		for(int i=0;i<uploadfile.length;i++) {
+			MultipartFile mfile = uploadfile[i];
+			System.out.println("Filename: "+ mfile.getOriginalFilename());
+			filenames += mfile.getOriginalFilename().trim()+":|";
+			if(!mfile.getOriginalFilename().isEmpty()) {
+				try{
+					byte[] bytes = mfile.getBytes();
+					Path path = Paths.get(docLocation+"/"+session.getAttribute("email").toString().trim()+"//"+mfile.getOriginalFilename().toString());
+					Files.write(path, bytes);
+				}
+				catch(Exception e){
+					System.out.println("File Upload EXCEPTION :::: "+e);
+				}
+			}
+		}
+		
+		meeting.setFile(filenames+update_meet_attachment);
 		meeting.setUpdateddate(new Timestamp(new Date().getTime()).toString());
 		meeting.setMeetingid(Integer.parseInt(meetingid));
 		meeting.setSubject(subject);
@@ -260,6 +294,7 @@ public class MeetingvsTask {
 			mv.addObject("tempselectuserList",tempselectuserList);
 			mv.addObject("meetVsTaskList",meetVsTaskList);
 			mv.addObject("taskAvailableFlag",taskAvailableFlag);
+			mv.addObject("docURL",docURL);
 			mv.addObject("LoginName", session.getAttribute("firstname")+" "+session.getAttribute("lastname"));
 			
 		}

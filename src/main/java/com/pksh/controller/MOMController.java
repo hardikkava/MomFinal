@@ -1,5 +1,6 @@
 package com.pksh.controller;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.net.URI;
@@ -56,14 +57,12 @@ import net.fortuna.ical4j.data.CalendarBuilder;
 import net.fortuna.ical4j.data.CalendarOutputter;
 import net.fortuna.ical4j.model.Component;
 import net.fortuna.ical4j.model.DateTime;
-import net.fortuna.ical4j.model.Parameter;
 import net.fortuna.ical4j.model.Property;
 import net.fortuna.ical4j.model.TimeZone;
 import net.fortuna.ical4j.model.TimeZoneRegistry;
 import net.fortuna.ical4j.model.TimeZoneRegistryFactory;
 import net.fortuna.ical4j.model.component.VEvent;
 import net.fortuna.ical4j.model.component.VTimeZone;
-import net.fortuna.ical4j.model.parameter.Cn;
 import net.fortuna.ical4j.model.parameter.CuType;
 import net.fortuna.ical4j.model.parameter.PartStat;
 import net.fortuna.ical4j.model.parameter.Role;
@@ -75,7 +74,6 @@ import net.fortuna.ical4j.model.property.Description;
 import net.fortuna.ical4j.model.property.Location;
 import net.fortuna.ical4j.model.property.Organizer;
 import net.fortuna.ical4j.model.property.ProdId;
-import net.fortuna.ical4j.model.property.Summary;
 import net.fortuna.ical4j.model.property.Uid;
 import net.fortuna.ical4j.util.UidGenerator;
 
@@ -462,7 +460,7 @@ public class MOMController
 	public ModelAndView saveMeeting(HttpSession session, HttpServletRequest req, Meeting meeting, @RequestParam("participant[]") String[] participants, @RequestParam(value = "refermeeting[]", required = false) String[] refmeetings, @RequestParam("uploadfile") MultipartFile[] uploadfile, @RequestParam(value = "fromdate") String fromdate, @RequestParam(value = "todate") String todate,@RequestParam(value = "place") String place,@RequestParam(value = "note") String note) 
 	{
 		ModelAndView mv = new ModelAndView();
-		
+		String filenames="";
 		try
 		{
 			//System.out.println(fromdate+""+todate+"");
@@ -484,20 +482,20 @@ public class MOMController
 			
 			if(refmeetings != null && refmeetings.length > 0)
 				meeting.setReferancemeeting(Arrays.toString(refmeetings).replace("[", "").replaceAll("]", "").trim().replaceAll(" +", ""));
+
 			
-			
-			/* FILE SAVE */
-			//byte[] bytes = file.getBytes(); 
-		//	Path path = Paths.get(docLocation + file.getOriginalFilename().toString());
-		//	Files.write(path, bytes);
-			
+			File f = new File(docLocation+"/"+session.getAttribute("email").toString().trim());
+			if(!f.exists())
+				f.mkdir();
+				
 			for(int i=0;i<uploadfile.length;i++) {
 				MultipartFile mfile = uploadfile[i];
-			//	System.out.println(mfile.getOriginalFilename());
+				System.out.println("Filename: "+ mfile.getOriginalFilename());
+				filenames += mfile.getOriginalFilename().trim()+":|";
 				if(!mfile.getOriginalFilename().isEmpty()) {
 					try{
 						byte[] bytes = mfile.getBytes();
-						Path path = Paths.get(docLocation +"1"+ mfile.getOriginalFilename().toString());
+						Path path = Paths.get(docLocation+"/"+session.getAttribute("email").toString().trim()+"/"+mfile.getOriginalFilename().toString());
 						Files.write(path, bytes);
 					}
 					catch(Exception e){
@@ -506,7 +504,7 @@ public class MOMController
 				}
 			}
 			
-			
+			meeting.setFile(filenames);
 			RestTemplate restTemplate = new RestTemplate();
 			
 			HttpEntity<Meeting> entity = new HttpEntity<>(meeting, getAuthHeader());

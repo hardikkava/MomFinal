@@ -73,7 +73,7 @@
                             				<div class="modal-body">
                             					
                             				   <div class="row" style="padding-left: 14px;padding-right: 16px; ">
-		                                        	<form role="form" method="post" action="updateMeeting">
+		                                        	<form role="form" method="post" action="updateMeeting" enctype="multipart/form-data">
 		                                        		<div class="row">
 			                                       			 <div class="col-lg-12">
 			                                       			 	 <div class="form-group">
@@ -94,7 +94,7 @@
 			                                            	 <div class="col-lg-6">
 			                                       			 	 <div class="form-group">
 				                                                	<label>EndDate</label>
-				                                                    <input type="text" class="form-control" placeholder="Enter Meeting Enddate..."  name="enddate" id='enddatepicker' value="${meeting.enddate}">
+				                                                    <input type="text" class="form-control" placeholder="Enter Meeting Enddate..."  name="enddate" required="required" id='enddatepicker' value="${meeting.enddate}">
 				                                                </div>
 			                                            	 </div>
 		                                            	 </div>
@@ -102,7 +102,7 @@
 			                                            	 <div class="col-lg-12">
 			                                       			 	 <div class="form-group">
 				                                                	<label>Category</label>
-				                                                	<input type="text" class="form-control" placeholder="Enter Meeting Category..." value="${meeting.category}" required name="category">
+				                                                	<input type="text" class="form-control" placeholder="Enter Meeting Category..." value="${meeting.category}" id="category" required name="category">
 				                                                </div>
 			                                            	 </div>
 			                                            </div>
@@ -128,6 +128,15 @@
 				                                                    </select>
 				                                                </div>
 			                                                </div>
+		                                            	 </div>
+		                                            	 <div class="row">
+			                                            	 <div class="col-lg-12">
+			                                       			 	 <div class="form-group">
+				                                                	<label>Attachment</label>
+				                                                	<input type="file" class="attchedfiles" name="uploadfile" placeholder="select file(s)..." multiple="multiple">
+				                                              		<input type="hidden" name="update_meet_attachment" value="${meeting.file}">
+				                                                </div>
+			                                            	 </div>
 		                                            	 </div>
 		                                            	 <div class="row">
 			                                            	 <div class="col-lg-12">
@@ -250,10 +259,26 @@
                                  	  </div>
                                  	  
                                  	  <div class="col-lg-8 col-sm-8 col-xs-12" style="padding-left: 36px;">
-                                 	 	<label style="padding-top: 24px;">Attachments</label><br/>
-                                 	 	<div class="attchments"></div>
-                                 		<div style="border: dotted #CCC 4px;padding: 8px;">Drop files here or <input style="display:inline;" type="file" name="docs">  </div>
-                                 	
+                                  	 	<label style="padding-top: 24px;">Attachments</label><br/> 
+<!--                                  	 	<div class="attchments"></div> -->
+<!--                                  		<div style="border: dotted #CCC 4px;padding: 8px;margin-bottom:12px;">Drop files here or <input style="display:inline;" type="file" id="upload_docs" name="meet_docs" multiple="multiple">  </div> -->
+											<c:set var="up_files" value="${fn:split(meeting.file, ':|')}" />
+											<c:set var="check_files" value="${fn:replace(meeting.file, ':|', '')}" />
+	                                 	   <div style="">
+	                                 	   <c:choose>
+                                   				<c:when test="${empty check_files}">
+		                                 	 		<i>No Attachements</i>
+                                      			</c:when>
+	                                      		<c:otherwise>
+	                                      		   <c:forEach items="${up_files}" var="up_files">
+			                                       <div style="width:16% !important;padding-right:30px;padding-bottom: 18px;display: inline-block;">
+			                                       	<i style="font-size: 96px;display:inherit;color:grey;" class="fa fa-4x fa-file-text-o" ></i>
+			                                       	<a style="text-align:center;word-wrap: break-word;color:grey;text-decoration: none;position: relative;top: 3px;" href="<c:url value="${docURL}${meeting.owner}/${up_files}"></c:url>">${up_files}</a>
+			                                       </div>	
+			                                   	  </c:forEach>	
+	                                      		</c:otherwise>
+	                                      </c:choose>
+	                                   	  </div>
                                  	 </div>
                                  	  <div class="col-lg-4 col-sm-4 col-xs-12">
                                  	  </div>
@@ -449,7 +474,7 @@
 		                                       			 <div class="col-lg-12">
 		                                       			 	 <div class="form-group">
 			                                                	<label>Subject</label>
-			                                                    <input type="text" class="form-control" placeholder="Enter Subject..." required name="tasksubject" >
+			                                                    <input type="text" class="form-control" placeholder="Enter Subject..." required name="tasksubject" id="tasksubject">
 			                                                </div>
 		                                            	 </div>
 	                                               </div>
@@ -511,6 +536,31 @@
 
                    <script>
                     $(document).ready(function() {
+                    	
+                    	$(".attchedfiles").change(function(event){
+            				var c=0;
+            				if($(".attchedfiles")[0].files.length > 5) {
+            					alert("Maximum 5 files allowed.");
+            				}
+            			
+            				$.each($(".attchedfiles").prop("files"),function(k,v){
+            					var siz = v['size'];
+            					if(siz > 5242880)
+            						c=c+1;
+            				});
+            				if(c>0)
+            					alert("Size cannot be more than 5 MB");
+            				
+            				$.each($(".attchedfiles").prop("files"),function(k,v){
+            					var ext = v['name'].split('.').pop().toLowerCase();
+            					if($.inArray(ext,['jpg','jpeg','gif','png', 'txt','doc','docx','pdf','xls','xlsx','ppt','pptx','zip','7z']) == -1)
+            						c=c+1;
+            				});
+            				if(c>0)
+            					alert("Choose only files with (.jpg, .jpeg, .gif, .png, .txt, .doc, .docx, .pdf, .xls, .xlsx, .ppt, .pptx, .zip, .7z) extension.");
+
+            			});
+                    
                     	
                     	var dateString, dateTimeParts, timeParts, dateParts, date;
                     	
@@ -614,7 +664,43 @@
                 	    	}
                 	   });
                    	
-                   	    
+	                  	$("#btnsavemeet").click(function(event){
+	                  		
+	                  		if($("#subject").val().length > 120){ alert('Maximum 110-120 characters allowed in Subject');  return false}
+                 	 		if($("#category").val().length > 30){ alert('Maximum 30 characters allowed in Category');  return false}
+                 	 		
+	        				var c=0;
+	        				if($(".attchedfiles")[0].files.length > 5) {
+	        					alert("Maximum 5 files allowed.");
+	        					return false;
+	        				}
+	        			
+	        				$.each($(".attchedfiles").prop("files"),function(k,v){
+	        					var siz = v['size'];
+	        					if(siz > 5242880)
+	        						c=c+1;
+	        				});
+	        				if(c>0){
+	        					alert("Size cannot be more than 5 MB");
+	        					return false;
+	        				}
+	        				
+	        				$.each($(".attchedfiles").prop("files"),function(k,v){
+	        					var ext = v['name'].split('.').pop().toLowerCase();
+	        					if($.inArray(ext,['jpg','jpeg','gif','png', 'txt','doc','docx','pdf','xls','xlsx','ppt','pptx']) == -1)
+	        						c=c+1;
+	        				});
+	        				if(c>0){
+	        					alert("Choose only images with (.jpg, .jpeg, .gif, .png, .txt, .doc, .docx, .pdf, .xls, .xlsx, .ppt, .pptx) extension.");
+	        					return false;
+	        				}
+	        				
+	        			});
+                  	
+	                  	$("#btnaddtask").click(function(event){
+	                  		if($("#tasksubject").val().length > 120){ alert('Maximum 110-120 characters allowed in Task Subject');  return false}
+	                  	});
+	                  	
                    	    
                     });
 					</script>

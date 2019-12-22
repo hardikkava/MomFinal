@@ -101,7 +101,7 @@
                                                 </div>  -->
                                                 <div class="form-group">
                                                 	<label>Place</label>&nbsp;<span style="color:red;">*</span>
-                                                    <input class="form-control" placeholder="Enter Place..." required name="place" type="text">
+                                                    <input class="form-control" placeholder="Enter Place..." required name="place" id="place" type="text">
                                                 </div>
                                                 <div class="form-group">
                                                 <label>Notes</label>
@@ -109,11 +109,11 @@
                                                 </div>
                                                 <div class="form-group">
                                                 <label>File(s)</label>
-                                                    <input type="file" class="attchedfiles" name="uploadfile[]" placeholder="select file(s)..." multiple="multiple">
+                                                    <input type="file" class="attchedfiles" name="uploadfile" placeholder="select file(s)..." multiple="multiple">
                                                 </div>
                                                 <div class="form-group">
                                                 <label>Category</label>
-                                                    <input class="form-control" placeholder="Enter Catagory..." name="category" type="text">
+                                                    <input class="form-control" placeholder="Enter Catagory..." name="category" id="category" type="text">
                                                 </div>
                                                 <div class="form-group">
                                                     <label>Recurring : </label>
@@ -232,18 +232,24 @@
             				
             				$.each($(".attchedfiles").prop("files"),function(k,v){
             					var ext = v['name'].split('.').pop().toLowerCase();
-            					if($.inArray(ext,['jpg','jpeg','gif','png', 'txt','doc','docx','pdf','xls','xlsx','ppt','pptx']) == -1)
+            					if($.inArray(ext,['jpg','jpeg','gif','png', 'txt','doc','docx','pdf','xls','xlsx','ppt','pptx','zip','7z']) == -1)
             						c=c+1;
             				});
             				if(c>0)
-            					alert("Choose only images with (.jpg, .jpeg, .gif, .png, .txt, .doc, .docx, .pdf, .xls, .xlsx, .ppt, .pptx) extension.");
+            					alert("Choose only files with (.jpg, .jpeg, .gif, .png, .txt, .doc, .docx, .pdf, .xls, .xlsx, .ppt, .pptx, .zip, .7z) extension.");
 
             			});
             						
                     	$("#btnsub").click(function(event){
+                   		
+                    		if($("#subject").val().length > 120){ alert('Maximum 110-120 characters allowed in Subject');  return false}
+                 	 		if($("#place").val().length > 30){ alert('Maximum 30 characters allowed in Place');  return false}
+                 	 		if($("#category").val().length > 30){ alert('Maximum 30 characters allowed in Category');  return false}
+              	 		 
             				var c=0;
             				if($(".attchedfiles")[0].files.length > 5) {
             					alert("Maximum 5 files allowed.");
+            					return false;
             				}
             			
             				$.each($(".attchedfiles").prop("files"),function(k,v){
@@ -251,17 +257,20 @@
             					if(siz > 5242880)
             						c=c+1;
             				});
-            				if(c>0)
+            				if(c>0){
             					alert("Size cannot be more than 5 MB");
+            					return false;
+            				}
             				
             				$.each($(".attchedfiles").prop("files"),function(k,v){
             					var ext = v['name'].split('.').pop().toLowerCase();
             					if($.inArray(ext,['jpg','jpeg','gif','png', 'txt','doc','docx','pdf','xls','xlsx','ppt','pptx']) == -1)
             						c=c+1;
             				});
-            				if(c>0)
+            				if(c>0){
             					alert("Choose only images with (.jpg, .jpeg, .gif, .png, .txt, .doc, .docx, .pdf, .xls, .xlsx, .ppt, .pptx) extension.");
-
+            					return false;
+            				}
             				
             				if(isStartDateInvalid || isEndDateInvalid){
             					alert("Kindly select different date, as selected date falls in weekend.");
@@ -290,7 +299,7 @@
                     		   
                     		$.get("isEmailAlreadyRegistered", { useremail:$("#useremail").val() } )
 								.done(function(data){
-									if(data == "email is already registered"){
+									if(data == "Email is already registered"){
                        		   			alert("This email address is already registered. kinldy add new email");
 										return false;
                                 	}else{
