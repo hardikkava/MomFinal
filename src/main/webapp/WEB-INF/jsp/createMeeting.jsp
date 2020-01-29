@@ -88,13 +88,13 @@
                                                 </div>
                                                 <div class="form-group">
                                                     <label>Participants</label>&nbsp;<span style="color:red;">*</span>
-                                                   <!--  <input class="form-control" placeholder="Enter Participants..." required name="participants" type="text" id="participants">  -->
-                                                	<select name="participant[]" id="userlst" class="form-control select2-multi" multiple="multiple" required >
+                                                     <input class="form-control" placeholder="Enter Participants..." required name="participants" type="text" id="participants" pattern="^([\w+-.%]+@[\w.-]+\.[A-Za-z]{2,4})(,[\w+-.%]+@[\w.-]+\.[A-Za-z]{2,4})*$"  title="Comma-separated emails allowed without space and special char">  
+                                                <!--  	<select name="participant[]" id="userlst" class="form-control select2-multi" multiple="multiple" required >
                                                 		<c:forEach items="${participants}" var="plist">
                                                 			<option value="${plist.email}">${plist.firstname} ${plist.lastname} (${plist.email})</option>
                                                 		</c:forEach>
                                                     </select><a href='#' data-target='#newuserModal' data-toggle='modal'>[+ Add New]</a>
-                                                </div>
+                                                --></div>
                                                <!--  <div class="form-group">
                                                 	<label>Owner</label><span style="color:red;">*</span>
                                                     <input class="form-control" placeholder="Enter Meeting Owner name" required name="owner" type="text">

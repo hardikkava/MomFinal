@@ -457,7 +457,8 @@ public class MOMController
 	}
 	
 	@RequestMapping("/saveMeeting")
-	public ModelAndView saveMeeting(HttpSession session, HttpServletRequest req, Meeting meeting, @RequestParam("participant[]") String[] participants, @RequestParam(value = "refermeeting[]", required = false) String[] refmeetings, @RequestParam("uploadfile") MultipartFile[] uploadfile, @RequestParam(value = "fromdate") String fromdate, @RequestParam(value = "todate") String todate,@RequestParam(value = "place") String place,@RequestParam(value = "note") String note) 
+	//public ModelAndView saveMeeting(HttpSession session, HttpServletRequest req, Meeting meeting, @RequestParam("participant[]") String[] participants, @RequestParam(value = "refermeeting[]", required = false) String[] refmeetings, @RequestParam("uploadfile") MultipartFile[] uploadfile, @RequestParam(value = "fromdate") String fromdate, @RequestParam(value = "todate") String todate,@RequestParam(value = "place") String place,@RequestParam(value = "note") String note) 
+	public ModelAndView saveMeeting(HttpSession session, HttpServletRequest req, Meeting meeting, @RequestParam("participants") String participants, @RequestParam(value = "refermeeting[]", required = false) String[] refmeetings, @RequestParam("uploadfile") MultipartFile[] uploadfile, @RequestParam(value = "fromdate") String fromdate, @RequestParam(value = "todate") String todate,@RequestParam(value = "place") String place,@RequestParam(value = "note") String note) 
 	{
 		ModelAndView mv = new ModelAndView();
 		String filenames="";
@@ -477,7 +478,8 @@ public class MOMController
 			System.out.println(startTs+""+endTs+"");
 			//System.out.println(meeting.getStartdate()+""+meeting.getEnddate());
 			
-			meeting.setParticipants(Arrays.toString(participants).replace("[", "").replaceAll("]", "").trim().replaceAll(" +", ""));
+			//meeting.setParticipants(Arrays.toString(participants).replace("[", "").replaceAll("]", "").trim().replaceAll(" +", ""));
+			meeting.setParticipants(participants.toString());
 			meeting.setOwner(session.getAttribute("email").toString()!=null ? session.getAttribute("email").toString() : "-");			
 			
 			if(refmeetings != null && refmeetings.length > 0)
