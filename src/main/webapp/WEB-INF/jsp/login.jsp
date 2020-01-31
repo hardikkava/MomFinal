@@ -51,6 +51,9 @@
                                     </div><br>
                                     	<input class="btn btn-lg btn-success btn-block" type="submit" name="submit" value="Login">
                                 </fieldset>
+								<div align="Left">
+                                    	<span>Not registered? <a href="SignInWithGoogle">Sign In With Google</a></span>
+                                    </div>
                             </form>
                         </div>
                     </div>
