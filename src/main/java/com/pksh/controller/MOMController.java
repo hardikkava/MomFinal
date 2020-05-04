@@ -34,6 +34,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import org.apache.tomcat.util.codec.binary.Base64;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -41,6 +42,8 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.oauth2.common.OAuth2AccessToken;
+import org.springframework.security.oauth2.provider.token.TokenStore;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -135,7 +138,9 @@ public class MOMController
     String updateMeetingV1;
     
     String strParticipants = "";
-	
+
+    
+    
 	@RequestMapping("/")
 	public String login() 
 	{
@@ -187,7 +192,7 @@ public class MOMController
 	            
 	            meettaskresult= meettaskRestTemplate.exchange(getMeetingsDueListByUser+email+"?date=test", HttpMethod.GET, entity, List.class);
 	            meetingResult = meettaskresult.getBody();
-	            meettaskresult= meettaskRestTemplate.exchange(getTasksDueListByUser+email+"?date=test", HttpMethod.GET, entity, List.class);
+	            meettaskresult= meettaskRestTemplate.exchange(getTasksDueListByUser+email, HttpMethod.GET, entity, List.class);
 	            taskResult = meettaskresult.getBody();
 	           
 	        }catch (Exception e) {
@@ -203,9 +208,10 @@ public class MOMController
 			viewName = "home";
 			
 		}
-		catch(HttpClientErrorException e)
+		catch(Exception e)
 		{
-			System.out.println("EXCEPTION OCCURS DURING LOGIN ::: "+e);
+			System.out.println(e);
+			
 			msg = "Invalid email or password.";
 			viewName = "login";
 		}
@@ -221,11 +227,14 @@ public class MOMController
 	@RequestMapping(value = "/logout")
 	public ModelAndView getlogoutRequest(HttpServletRequest request)
 	{
+		System.out.println("In Logout Call");
 		ModelAndView mv = new ModelAndView();
 		
 		HttpSession session = request.getSession(false);
 		SecurityContextHolder.clearContext();
         session= request.getSession(false);
+        
+       
 		if(session != null)
 		{
 			session.invalidate();

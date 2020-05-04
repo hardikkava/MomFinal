@@ -10,6 +10,21 @@ public class GmailUser {
 	private String family_name;
 	private String email;
 	private String picture;
+	private String hd;
+	
+	
+	/**
+	 * @return the hd
+	 */
+	public String getHd() {
+		return hd;
+	}
+	/**
+	 * @param hd the hd to set
+	 */
+	public void setHd(String hd) {
+		this.hd = hd;
+	}
 	/**
 	 * @return the name
 	 */
